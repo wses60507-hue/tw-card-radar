@@ -1,6 +1,13 @@
-import datetime, html, json, os, re, urllib.request
+import datetime
+import html
+import json
+import os
+import re
+import time
+import urllib.request
 from google import genai
 from google.genai import types
+
 
 def fetch_page_text(url, max_chars=3500):
     if not url:
@@ -8,7 +15,9 @@ def fetch_page_text(url, max_chars=3500):
     try:
         req = urllib.request.Request(
             url,
-            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            },
         )
         with urllib.request.urlopen(req, timeout=15) as resp:
             raw = resp.read().decode("utf-8", errors="ignore")
@@ -20,6 +29,7 @@ def fetch_page_text(url, max_chars=3500):
         print(f"略過抓取 {url}: {e}")
         return ""
 
+
 with open("cards.json", "r", encoding="utf-8") as f:
     current_data = json.load(f)
 
@@ -30,7 +40,11 @@ for c in current_data.get("cards", []):
     if page_text:
         snippets.append(f"【{c['bank']} {c['name']} 官網最新文字】\n{page_text}")
 
-fetched_context = "\n\n".join(snippets) if snippets else "（本次未抓到新網頁文字，請保留原資料並更新日期）"
+fetched_context = (
+    "\n\n".join(snippets)
+    if snippets
+    else "（本次未抓到新網頁文字，請保留原資料並更新日期）"
+)
 
 prompt = f"""今天是 {today}。請根據以下即時抓取到的台灣各銀行信用卡官網文字，核對並更新原本的 cards.json。
 規則：
@@ -46,22 +60,13 @@ prompt = f"""今天是 {today}。請根據以下即時抓取到的台灣各銀�
 """
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-resp = client.models.generate_content(
-    model="gemini-3.8-flash",
-    contents=prompt,
-    config=types.GenerateContentConfig(
-        response_mime_type="application/json",
-        temperature=0.1,
-    ),
-)
-
-text = resp.text.strip()
-match = re.search(r"\{[\s\S]*\}", text)
-if not match:
-    raise ValueError("無法從回應解析 JSON")
-updated = json.loads(match.group(0))
-assert isinstance(updated.get("cards"), list) and len(updated["cards"]) > 0
-
-with open("cards.json", "w", encoding="utf-8") as f:
-    json.dump(updated, f, ensure_ascii=False, indent=2)
-print(f"成功更新 {len(updated['cards'])} 張信用卡權益 ({today})")
+resp = None
+for model_name in [
+    "gemini-3.8-flash",
+    "gemini-3.6-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-3.1-flash-lite",
+]:
+    try:
+        print(f"嘗試使用模型：{model_name}")
+        resp = client.models.generate_content(
