@@ -1,0 +1,2216 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>刷哪張？台灣信用卡最高回饋雷達</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="刷哪張" />
+  <meta name="theme-color" content="#059669" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23059669'/%3E%3Crect x='12' y='20' width='40' height='24' rx='4' fill='none' stroke='white' stroke-width='4'/%3E%3Cline x1='12' y1='28' x2='52' y2='28' stroke='white' stroke-width='4'/%3E%3C/svg%3E" />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+    body {
+      font-family: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .card-lift { transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease; }
+    .card-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 24px -6px rgba(15, 23, 42, 0.08); }
+    .fade-in { animation: fadeIn 0.2s ease-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Top Navigation -->
+  <header class="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-sm shrink-0">
+          <i data-lucide="credit-card" class="w-5 h-5"></i>
+        </div>
+        <div class="min-w-0">
+          <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 truncate">刷哪張？回饋雷達</h1>
+          <p class="text-[11px] text-slate-500 hidden sm:block truncate">2026 台灣信用卡即時試算・可常態更新權益庫</p>
+        </div>
+      </div>
+
+      <!-- Desktop/Mobile Compact Tabs -->
+      <nav class="flex items-center bg-slate-100 p-1 rounded-xl shrink-0" role="tablist">
+        <button id="tab-btn-radar" type="button" data-tab="radar" class="tab-btn px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 bg-white text-emerald-700 shadow-sm">
+          <i data-lucide="search" class="w-4 h-4"></i>
+          <span>快速查卡</span>
+        </button>
+        <button id="tab-btn-wallet" type="button" data-tab="wallet" class="tab-btn px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900">
+          <i data-lucide="wallet" class="w-4 h-4"></i>
+          <span>我的皮夾</span>
+          <span id="nav-wallet-count" class="px-1.5 py-0.5 text-[10px] rounded-full bg-emerald-100 text-emerald-700 font-bold">0</span>
+        </button>
+        <button id="tab-btn-update" type="button" data-tab="update" class="tab-btn px-3 sm:px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 text-slate-600 hover:text-slate-900">
+          <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+          <span>常態更新</span>
+          <span id="nav-expiry-dot" class="hidden w-2 h-2 rounded-full bg-amber-500"></span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-5 sm:py-7">
+
+    <!-- ==================== TAB 1: 快速查卡 (RADAR) ==================== -->
+    <section id="view-radar" class="space-y-5 fade-in">
+
+      <!-- Hero Search & Calculator Box -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 sm:p-6 space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+          <!-- Store / Website Search Input -->
+          <div class="md:col-span-8">
+            <label for="merchant-input" class="block text-xs font-semibold text-slate-600 mb-1.5">消費店家、網站或場景</label>
+            <div class="relative">
+              <i data-lucide="search" class="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+              <input id="merchant-input" type="text" autocomplete="off"
+                placeholder="輸入店家或網站，例如：蝦皮、momo、7-11、Uber Eats、星巴克、日本、ChatGPT..."
+                class="w-full pl-11 pr-10 py-3 rounded-xl border border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-sm sm:text-base font-medium text-slate-900 placeholder:text-slate-400 transition" />
+              <button id="clear-merchant-btn" type="button" title="清除輸入"
+                class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-full">
+                <i data-lucide="x" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Amount Input -->
+          <div class="md:col-span-4">
+            <label for="amount-input" class="block text-xs font-semibold text-slate-600 mb-1.5">本次消費金額（NT$）</label>
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">NT$</span>
+              <input id="amount-input" type="number" min="1" step="1" value="1000"
+                class="w-full pl-12 pr-3 py-3 rounded-xl border border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-sm sm:text-base font-bold text-slate-900 transition" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Merchant Chips -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-500">熱門消費場景一鍵查詢</span>
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] text-slate-400 hidden sm:inline">快捷金額：</span>
+              <button type="button" data-amount="300" class="quick-amt-btn px-2 py-0.5 text-[11px] font-semibold rounded-md bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-600 transition">$300</button>
+              <button type="button" data-amount="1000" class="quick-amt-btn px-2 py-0.5 text-[11px] font-semibold rounded-md bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-600 transition">$1,000</button>
+              <button type="button" data-amount="5000" class="quick-amt-btn px-2 py-0.5 text-[11px] font-semibold rounded-md bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-600 transition">$5,000</button>
+              <button type="button" data-amount="15000" class="quick-amt-btn px-2 py-0.5 text-[11px] font-semibold rounded-md bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-600 transition">$15,000</button>
+            </div>
+          </div>
+          <div id="quick-merchant-chips" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Filters Bar -->
+        <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2.5">
+            <!-- Owned Only Toggle -->
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 hover:bg-slate-100 transition">
+              <input id="filter-owned-toggle" type="checkbox" class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
+              <span class="text-xs sm:text-sm font-semibold text-slate-700">只看我持有的卡片</span>
+            </label>
+
+            <!-- Payment Method Filter -->
+            <select id="filter-payment-select" class="text-xs sm:text-sm font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 outline-none focus:border-emerald-500 cursor-pointer">
+              <option value="all">支付方式：全部</option>
+              <option value="實體刷卡">實體刷卡</option>
+              <option value="網購線上">網購 / 線上輸入卡號</option>
+              <option value="LINE Pay">LINE Pay</option>
+              <option value="街口支付">街口支付</option>
+              <option value="台新Pay/台灣Pay">台新Pay / 台灣Pay</option>
+              <option value="Apple Pay/Google Pay">Apple Pay / Google Pay</option>
+              <option value="OPEN錢包/FamiPay">OPEN錢包 / My FamiPay</option>
+              <option value="全支付">全支付</option>
+            </select>
+
+            <!-- Holiday Toggle (for 台新假日刷 etc.) -->
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 hover:bg-slate-100 transition" title="週六日或國定假日啟用（台新假日刷 2% 等假日限定方案將納入比較）">
+              <input id="filter-holiday-toggle" type="checkbox" class="w-4 h-4 accent-amber-500 rounded cursor-pointer" />
+              <span class="text-xs sm:text-sm font-semibold text-slate-700">假日消費</span>
+            </label>
+          </div>
+
+          <!-- Sort Selector -->
+          <div class="flex items-center gap-1.5 text-xs">
+            <span class="text-slate-500 font-medium">排序：</span>
+            <select id="sort-select" class="font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 outline-none focus:border-emerald-500 cursor-pointer">
+              <option value="reward">實拿回饋金額（高→低）</option>
+              <option value="rate">實質回饋率（高→低）</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Header Summary -->
+      <div class="flex flex-wrap items-center justify-between gap-2 px-1">
+        <div id="result-summary-text" class="text-sm font-bold text-slate-800"></div>
+        <div id="result-meta-text" class="text-xs text-slate-500"></div>
+      </div>
+
+      <!-- Results List -->
+      <div id="radar-results" class="space-y-3.5"></div>
+    </section>
+
+    <!-- ==================== TAB 2: 我的皮夾 (WALLET) ==================== -->
+    <section id="view-wallet" class="hidden space-y-6 fade-in">
+
+      <!-- Tier & Identity Settings -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <i data-lucide="sliders" class="w-4 h-4 text-emerald-600"></i>
+              個人身分與權益等級設定
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">切換您的自扣、VIP 或選取方案，系統會即時重新計算「快速查卡」的精準回饋率。</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
+            <div>
+              <div class="text-xs font-bold text-slate-800">國泰 CUBE 等級</div>
+              <div class="text-[11px] text-slate-500">財管 VIP 指定通路 3.3%（一般 3%）</div>
+            </div>
+            <label class="inline-flex items-center cursor-pointer">
+              <input id="tier-cube-vip" type="checkbox" class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
+              <span class="ml-1.5 text-xs font-bold text-slate-700">VIP</span>
+            </label>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
+            <div>
+              <div class="text-xs font-bold text-slate-800">台新 Richart 自扣</div>
+              <div class="text-[11px] text-slate-500">設定台新帳戶扣繳享 Level 2 (3.3%~3.8%)</div>
+            </div>
+            <label class="inline-flex items-center cursor-pointer">
+              <input id="tier-taishin-autopay" type="checkbox" class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
+              <span class="ml-1.5 text-xs font-bold text-slate-700">已自扣</span>
+            </label>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
+            <div>
+              <div class="text-xs font-bold text-slate-800">玉山 Unicard 方案</div>
+              <div class="text-[11px] text-slate-500">簡單選 3% / 任意選 3.5% / UP選 4.5%</div>
+            </div>
+            <select id="tier-unicard-plan" class="text-xs font-bold bg-white border border-slate-300 rounded-lg px-2 py-1 outline-none focus:border-emerald-500">
+              <option value="simple">簡單選 3%</option>
+              <option value="any">任意選 3.5%</option>
+              <option value="up">UP選 4.5%</option>
+            </select>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
+            <div>
+              <div class="text-xs font-bold text-slate-800">滙豐 Live+ 自扣</div>
+              <div class="text-[11px] text-slate-500">滙豐帳戶自動扣繳加碼 +1%（最高 4.88%）</div>
+            </div>
+            <label class="inline-flex items-center cursor-pointer">
+              <input id="tier-hsbc-autopay" type="checkbox" class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
+              <span class="ml-1.5 text-xs font-bold text-slate-700">已自扣</span>
+            </label>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3">
+            <div>
+              <div class="text-xs font-bold text-slate-800">永豐 DAWAY 身分</div>
+              <div class="text-[11px] text-slate-500">2026 下半年新戶 LINE Pay 最高 8%（舊戶 2%）</div>
+            </div>
+            <label class="inline-flex items-center cursor-pointer">
+              <input id="tier-daway-new" type="checkbox" class="w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
+              <span class="ml-1.5 text-xs font-bold text-slate-700">新戶</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Owned Cards Selector Grid -->
+      <div class="space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900">勾選我持有的信用卡</h2>
+            <p class="text-xs text-slate-500">勾選後即可在「快速查卡」開啟「只看我持有的卡片」，並追蹤各卡本月回饋上限。</p>
+          </div>
+          <button id="wallet-add-card-btn" type="button" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
+            <i data-lucide="plus" class="w-4 h-4"></i>
+            <span>新增自訂卡片</span>
+          </button>
+        </div>
+        <div id="wallet-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
+      </div>
+
+      <!-- Monthly Spend Log & Cap Reset -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <i data-lucide="receipt" class="w-4 h-4 text-emerald-600"></i>
+              本月消費與回饋額度紀錄
+            </h2>
+            <p class="text-xs text-slate-500">在「快速查卡」點擊「記一筆消費」後會累計於此，系統將自動扣減剩餘回饋上限。</p>
+          </div>
+          <button id="reset-monthly-btn" type="button" class="px-3 py-1.5 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition flex items-center gap-1.5">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+            <span>重置本月已刷額度</span>
+          </button>
+        </div>
+        <div id="spend-log-container"></div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: 常態更新中心 (UPDATE) ==================== -->
+    <section id="view-update" class="hidden space-y-6 fade-in">
+
+      <!-- Expiry Health Summary -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+            <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="text-xs font-semibold text-slate-500">有效權益卡片</div>
+            <div id="stat-valid-count" class="text-2xl font-extrabold text-slate-900">0</div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-amber-200 p-4 flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+            <i data-lucide="clock" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="text-xs font-semibold text-slate-500">45 天內即將到期</div>
+            <div id="stat-expiring-count" class="text-2xl font-extrabold text-amber-600">0</div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-rose-200 p-4 flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+            <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="text-xs font-semibold text-slate-500">已過期（建議更新）</div>
+            <div id="stat-expired-count" class="text-2xl font-extrabold text-rose-600">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Routine Update Methods Panel -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        <!-- Method 1: Remote HTTPS JSON Sync -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3.5">
+          <div class="flex items-center justify-between gap-2">
+            <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+              <i data-lucide="cloud-download" class="w-4 h-4 text-emerald-600"></i>
+              遠端 JSON 雲端訂閱更新
+            </h2>
+            <span id="last-sync-label" class="text-[11px] text-slate-400 font-medium"></span>
+          </div>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            可將您維護的信用卡規則 JSON 放在 GitHub Gist 或公開 HTTPS 空間，貼上 Raw 網址即可一鍵同步最新權益。
+          </p>
+          <div class="space-y-2.5">
+            <input id="remote-url-input" type="url" placeholder="https://gist.githubusercontent.com/.../cards.json"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none text-xs sm:text-sm" />
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <label class="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 cursor-pointer">
+                <input id="remote-merge-checkbox" type="checkbox" checked class="w-3.5 h-3.5 accent-emerald-600 rounded" />
+                <span>保留我目前勾選的「已持有」狀態</span>
+              </label>
+              <button id="remote-sync-btn" type="button" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center gap-1.5 transition">
+                <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                <span>拉取並同步更新</span>
+              </button>
+            </div>
+            <div id="remote-sync-status" class="text-xs hidden rounded-lg p-2.5"></div>
+          </div>
+        </div>
+
+        <!-- Method 2: AI Prompt + JSON Import/Export -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-3.5">
+          <h2 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+            <i data-lucide="sparkles" class="w-4 h-4 text-emerald-600"></i>
+            每季一鍵更新（AI 提示詞 ＋ JSON 匯入/匯出）
+          </h2>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            銀行每半年換一次權益時，點擊「複製 AI 更新提示詞」請 AI 幫您查最新規則並產出 JSON，再貼上或匯入檔案即可瞬間升級！
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <button id="copy-ai-prompt-btn" type="button" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 transition">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+              <span>複製 AI 更新提示詞</span>
+            </button>
+            <button id="export-json-btn" type="button" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center gap-1.5 transition">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>匯出 JSON 備份</span>
+            </button>
+            <label class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center gap-1.5 transition cursor-pointer">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+              <span>匯入 JSON 檔</span>
+              <input id="import-json-file" type="file" accept=".json,application/json" class="hidden" />
+            </label>
+            <button id="open-paste-json-btn" type="button" class="px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition">
+              <i data-lucide="clipboard-paste" class="w-3.5 h-3.5"></i>
+              <span>貼上 JSON 套用</span>
+            </button>
+          </div>
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400">資料自動儲存於瀏覽器本機</span>
+            <button id="reset-default-db-btn" type="button" class="text-xs font-semibold text-rose-600 hover:text-rose-700 underline">
+              還原預設 2026 下半年資料庫
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Manage All Cards & Rules Table -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900">信用卡權益資料庫管理</h2>
+            <p class="text-xs text-slate-500">直接手動新增卡片、修改回饋率、加碼上限、適用通路或活動到期日。</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <select id="db-expiry-filter" class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 outline-none">
+              <option value="all">全部狀態</option>
+              <option value="expiring">即將到期 / 已過期</option>
+              <option value="valid">有效中</option>
+            </select>
+            <button id="db-add-card-btn" type="button" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              <span>新增信用卡</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="db-cards-list" class="space-y-3"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 bg-white mt-8">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+      <span>內建 2026 下半年台灣熱門信用卡權益資料（最後校正：2026-11-22）。實際回饋條件以各發卡銀行官網公告為準。</span>
+      <span id="footer-card-count" class="font-semibold text-slate-600"></span>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL: ADD / EDIT CARD ==================== -->
+  <div id="card-editor-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+        <h3 id="editor-modal-title" class="text-base font-extrabold text-slate-900">編輯信用卡權益</h3>
+        <button id="close-editor-modal-btn" type="button" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="card-editor-form" class="p-5 overflow-y-auto space-y-4 flex-1">
+        <input type="hidden" id="edit-card-id" />
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">發卡銀行 *</label>
+            <input id="edit-bank" type="text" required placeholder="例如：國泰世華" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-emerald-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">卡片名稱 *</label>
+            <input id="edit-name" type="text" required placeholder="例如：CUBE 信用卡" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-emerald-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">回饋幣別 / 點數名稱 *</label>
+            <input id="edit-reward-type" type="text" required placeholder="例如：小樹點、現金回饋、LINE POINTS" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-emerald-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">一般消費基本回饋率 (%) *</label>
+            <input id="edit-base-rate" type="number" step="0.01" min="0" max="50" required value="1.0" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-emerald-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">權益到期日 *</label>
+            <input id="edit-valid-until" type="date" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-emerald-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">卡片色系</label>
+            <select id="edit-color" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-emerald-500 outline-none">
+              <option value="from-emerald-600 to-teal-700">翡翠綠</option>
+              <option value="from-rose-600 to-red-700">台新紅</option>
+              <option value="from-teal-600 to-cyan-700">玉山青</option>
+              <option value="from-slate-800 to-slate-950">尊爵黑</option>
+              <option value="from-indigo-600 to-blue-700">深海藍</option>
+              <option value="from-amber-500 to-orange-600">暖陽橘</option>
+              <option value="from-violet-600 to-purple-700">極光紫</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">官方權益網頁連結 (HTTPS)</label>
+          <input id="edit-official-url" type="url" placeholder="https://..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-emerald-500 outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">卡片備註（例如：切換頻率、自扣條件）</label>
+          <input id="edit-notes" type="text" placeholder="例如：每日可於 App 切換一次權益" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:border-emerald-500 outline-none" />
+        </div>
+
+        <!-- Rules Builder -->
+        <div class="pt-3 border-t border-slate-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-extrabold text-slate-900">指定通路 / 加碼回饋規則</h4>
+            <button id="add-rule-row-btn" type="button" class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold flex items-center gap-1 transition">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+              <span>新增規則</span>
+            </button>
+          </div>
+          <div id="edit-rules-container" class="space-y-3"></div>
+        </div>
+      </form>
+
+      <div class="px-5 py-3.5 border-t border-slate-200 bg-slate-50 flex items-center justify-end gap-2.5">
+        <button id="cancel-editor-btn" type="button" class="px-4 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition">取消</button>
+        <button id="save-editor-btn" type="submit" form="card-editor-form" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition">儲存卡片權益</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: PASTE JSON ==================== -->
+  <div id="paste-json-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+        <h3 class="text-base font-extrabold text-slate-900">貼上 JSON 權益資料更新</h3>
+        <button id="close-paste-modal-btn" type="button" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="p-5 space-y-3">
+        <p class="text-xs text-slate-500">貼上由 AI 產生或之前匯出的 JSON 陣列（或包含 <code>cards</code> 欄位的物件）。</p>
+        <textarea id="paste-json-textarea" rows="9" placeholder='[{"id": "...", "bank": "...", "name": "...", "rules": [...]}]'
+          class="w-full p-3 rounded-xl border border-slate-300 font-mono text-xs focus:border-emerald-500 outline-none"></textarea>
+        <div id="paste-json-error" class="hidden text-xs text-rose-600 font-semibold"></div>
+      </div>
+      <div class="px-5 py-3.5 border-t border-slate-200 bg-slate-50 flex items-center justify-end gap-2">
+        <button id="cancel-paste-btn" type="button" class="px-4 py-2 rounded-xl border border-slate-300 bg-white text-slate-700 text-xs font-bold">取消</button>
+        <button id="apply-paste-json-btn" type="button" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">套用更新</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: CONFIRMATION ==================== -->
+  <div id="confirm-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-sm p-5 space-y-4">
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+          <i data-lucide="alert-circle" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h3 id="confirm-title" class="text-sm font-extrabold text-slate-900">確認操作</h3>
+          <p id="confirm-message" class="text-xs text-slate-600 mt-1 leading-relaxed"></p>
+        </div>
+      </div>
+      <div class="flex items-center justify-end gap-2">
+        <button id="confirm-cancel-btn" type="button" class="px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-slate-700 text-xs font-bold">取消</button>
+        <button id="confirm-ok-btn" type="button" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold">確認</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const STORAGE_KEY = 'cardmax_tw_v1';
+      const DB_VERSION = '2026.11.3';
+
+      // ==================== 2026 H2 VERIFIED TAIWAN CREDIT CARD DATASET ====================
+      const DEFAULT_CARDS = [
+        {
+          id: 'taishin-richart',
+          bank: '台新銀行',
+          name: 'Richart 卡（7+1 切換刷）',
+          color: 'from-rose-600 to-red-700',
+          rewardType: '台新Point',
+          baseRate: 0.3,
+          validUntil: '2026-12-31',
+          officialUrl: 'https://www.taishinbank.com.tw/TSB/personal/credit/intro/overview/future/ab46dfa7-5d88-11f1-b50f-0050568c09e3',
+          owned: true,
+          notes: '含 7+1 大刷（Chill刷/Pay著刷/天天刷/大筆刷/好饗刷/數趣刷/玩旅刷/假日刷），每日 23:59 前於 Richart Life App 切換；設台新帳戶自扣享 Level 2 高回饋。',
+          rules: [
+            {
+              id: 'ts-chill',
+              name: 'Chill刷（2026下半年新權益）',
+              rate: 10.0,
+              tierKey: 'taishinAutoPay',
+              tierOffRate: 1.3,
+              bonusCap: null,
+              condition: '切換「Chill刷」享指定火鍋燒肉、手搖飲、追劇/追星通路 3.3%–10%（含 LINE Pay 綁定）',
+              payments: ['實體刷卡', '網購線上', 'LINE Pay', 'Apple Pay/Google Pay'],
+              keywords: ['chill刷', '火鍋', '燒肉', '手搖飲', '飲料', '追劇', '追星', '聚餐', '餐廳', '美食']
+            },
+            {
+              id: 'ts-pay-taishin',
+              name: 'Pay著刷（台新Pay/台灣Pay）',
+              rate: 3.8,
+              tierKey: 'taishinAutoPay',
+              tierOffRate: 1.3,
+              bonusCap: null,
+              condition: '切換「Pay著刷」並綁定台新Pay 或台灣Pay (TWQR) 享 3.8%',
+              payments: ['台新Pay/台灣Pay'],
+              keywords: ['pay著刷', '台新pay', '台灣pay', 'twqr', '7-11', '7-eleven', '小七', '全家', '超商', '行動支付', '新光三越', '康是美']
+            },
+            {
+              id: 'ts-pay-line',
+              name: 'Pay著刷（LINE Pay 領券加碼）',
+              rate: 3.8,
+              tierKey: 'taishinAutoPay',
+              tierOffRate: 1.3,
+              bonusCap: 500,
+              condition: '切換「Pay著刷」2.3% + 領券加碼 1.5%（加碼月上限 500 點）；亦支援全盈+Pay',
+              payments: ['LINE Pay'],
+              keywords: ['pay著刷', 'line pay', 'linepay', '全盈+pay', '行動支付', '飲料', '餐廳', '美食', '日常消費', '小額消費']
+            },
+            {
+              id: 'ts-ec',
+              name: '數趣刷',
+              rate: 3.3,
+              tierKey: 'taishinAutoPay',
+              tierOffRate: 1.3,
+              bonusCap: null,
+              condition: '切換「數趣刷」3.3%：網購、線上課程、遊戲影音、指定 AI 服務（官方限 ChatGPT/Claude/Perplexity/Notion/Canva，不含 Gemini）；不含 LINE Pay/街口',
+              payments: ['網購線上', '實體刷卡', 'Apple Pay/Google Pay', '台新Pay/台灣Pay'],
+              keywords: ['數趣刷', 'momo', '蝦皮', 'shopee', 'pchome', '酷澎', 'coupang', '淘寶', 'taobao', 'amazon', '東森', '東森購物', '博客來', 'richart mart', 'payeasy', 'iherb', 'shein', 'farfetch', 'olive young', '知識衛星', 'amazing talker', 'tutor abc', 'hahow', 'pressplay', 'udemy', 'kobo', 'readmoo', '線上課程', 'mycard', '遊戲橘子', 'steam', 'playstation', 'nintendo', 'netflix', 'spotify', 'disney+', 'chatgpt', 'notion', 'canva', 'perplexity', 'claude', 'ai服務', 'ai訂閱', '網購', '電商', '遊戲', '影音', '影音訂閱']
+            },
+            {
+              id: 'ts-daily',
+              name: '天天刷',
+              rate: 3.3,
+              tierKey: 'taishinAutoPay',
+              tierOffRate: 1.3,
+              bonusCap: null,
+              condition: '切換「天天刷」：超商（限台新Pay綁定）、量販超市、交通加油、藥妝藥局享 3.3%',
+              payments: ['台新Pay/台灣Pay', '實體刷卡', 'Apple Pay/Google Pay'],
+              keywords: ['天天刷', '7-11', '7-eleven', '小七', '全家', '超商', '家樂福', '大買家', 'lopia', '唐吉軻德', 'donki', '智生活', '高鐵', '台鐵', '台灣大車隊', 'linego', 'yoxi', 'uber', 'bolt', '計程車', '中油', '全國加油', 'evoasis', 'evalue', 'uspace', '車麻吉', '加油', '充電', '屈臣氏', '康是美', '寶雅', '大樹藥局', '杏一', '丁丁藥局', '佑全', '藥妝', '藥局']
+            },
+            {
+              id: 'ts-dining',
+              name: '好饗刷',
+              rate: 3.3,
+              tierKey: 'taishinAutoPay',
+              tierOffRate: 1.3,
+              bonusCap: null,
+              condition: '切換「好饗刷」：全臺餐飲（含王品瘋Pay）、外送平台、展演購票娛樂、指定飯店/樂園、KTV 享 3.3%',
+              payments: ['實體刷卡', '網購線上', 'Apple Pay/Google Pay', '台新Pay/台灣Pay'],
+              keywords: ['好饗刷', '餐廳', '美食', '王品', '王品瘋pay', 'uber eats', 'ubereats', 'foodpanda', '外送', '麥當勞', '壽司郎', '星巴克', 'starbucks', '飯店', '樂園', 'ktv', '錢櫃', '好樂迪', 'oncor', 'sing!go', '享溫馨', 'funnow', '娛樂', '購票', '展演']
+            },
+            {
+              id: 'ts-big',
+              name: '大筆刷',
+              rate: 3.3,
+              tierKey: 'taishinAutoPay',
+              tierOffRate: 1.3,
+              bonusCap: null,
+              condition: '切換「大筆刷」：指定百貨（新光三越含skm pay、遠百、SOGO、漢神巨蛋、微風廣場）、Outlet、居家裝修、時尚品味享 3.3%',
+              payments: ['實體刷卡', 'Apple Pay/Google Pay', '台新Pay/台灣Pay'],
+              keywords: ['大筆刷', '新光三越', 'skm pay', 'sogo', '遠東百貨', '遠百', '漢神百貨', '漢神巨蛋', '微風', '微風廣場', '百貨', 'outlet', '三井outlet', '華泰名品城', 'ikea', '特力屋', '居家', '裝修', 'uniqlo', 'zara', '時尚']
+            },
+            {
+              id: 'ts-travel',
+              name: '玩旅刷',
+              rate: 3.3,
+              tierKey: 'taishinAutoPay',
+              tierOffRate: 1.3,
+              bonusCap: null,
+              condition: '切換「玩旅刷」：海外消費（實體/線上）、海外交通卡（Suica/ICOCA/WOWPASS）、15家航空、訂房網、13家旅行社享 3.3%',
+              payments: ['實體刷卡', '網購線上', 'Apple Pay/Google Pay'],
+              keywords: ['玩旅刷', '海外', '日本', '韓國', '歐美', '出國', '機票', '航空', '華航', '長榮', '星宇', '虎航', 'agoda', 'booking', 'hotels.com', 'expedia', 'airbnb', 'klook', 'kkday', 'suica', 'icoca', 'wowpass', '雄獅', '可樂旅遊', '易遊網', '旅遊', '旅行社']
+            },
+            {
+              id: 'ts-holiday',
+              name: '假日刷（節假日一般消費保底）',
+              rate: 2.0,
+              holidayOnly: true,
+              excludeKeywords: ['7-11', '7-eleven', '小七', '全家', '萊爾富', 'ok超商', '超商', '便利商店', '全聯', '繳稅', '稅'],
+              bonusCap: null,
+              condition: '未命中更高指定通路時，節假日切「假日刷」享一般消費 2% 無上限（含手動繳保費/LINE Pay/全盈+Pay；不含四大超商、全聯、繳稅費、街口）',
+              payments: ['實體刷卡', '網購線上', 'LINE Pay', 'Apple Pay/Google Pay', '台新Pay/台灣Pay'],
+              keywords: ['假日刷', '假日', '週末', '保費', '保險', '一般消費', '日常消費', 'line pay']
+            },
+            {
+              id: 'ts-insurance',
+              name: '保費免切換',
+              rate: 1.3,
+              bonusCap: null,
+              condition: '免切換方案一次付清保費直接享 1.3%（若遇假日切換「假日刷」享 2%）',
+              payments: ['實體刷卡', '網購線上'],
+              keywords: ['保費', '保險']
+            }
+          ]
+        },
+        {
+          id: 'cathay-cube',
+          bank: '國泰世華',
+          name: 'CUBE 信用卡',
+          color: 'from-emerald-600 to-teal-700',
+          rewardType: '小樹點',
+          baseRate: 0.3,
+          validUntil: '2026-12-31',
+          officialUrl: 'https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube',
+          owned: true,
+          notes: '每日可於 CUBE App 切換一次權益（當日生效）；財管 VIP 玩數位/樂饗購/趣旅行享 3.3%，2026 下半年新增「全支付」與「台塑家」2% 無上限。',
+          rules: [
+            {
+              id: 'cube-digital',
+              name: '玩數位',
+              rate: 3.0,
+              tierKey: 'cubeVip',
+              tierRate: 3.3,
+              bonusCap: null,
+              condition: '每日於 CUBE App 切換至「玩數位」（一般 3% / VIP 3.3% 無上限）',
+              payments: ['網購線上', '實體刷卡', 'Apple Pay/Google Pay'],
+              keywords: ['玩數位', 'momo', '蝦皮', 'shopee', 'pchome', '酷澎', 'coupang', '淘寶', 'amazon', '博客來', 'apple', 'chatgpt', 'claude', 'gemini', 'notion', 'canva', 'netflix', 'spotify', 'disney+', '網購', '電商', 'ai訂閱', 'ai服務', '影音訂閱', '露天']
+            },
+            {
+              id: 'cube-shop',
+              name: '樂饗購',
+              rate: 3.0,
+              tierKey: 'cubeVip',
+              tierRate: 3.3,
+              bonusCap: null,
+              condition: '每日於 CUBE App 切換至「樂饗購」（指定百貨、餐飲、外送、屈臣氏含官網/App、康是美）',
+              payments: ['實體刷卡', '網購線上', 'Apple Pay/Google Pay'],
+              keywords: ['樂饗購', '新光三越', '漢神百貨', 'sogo', '遠東百貨', '微風', '百貨', 'uber eats', 'ubereats', 'foodpanda', '外送', '餐廳', '美食', '王品', '星巴克', 'starbucks', '麥當勞', '壽司郎', '屈臣氏', '康是美', '藥妝', '寶雅']
+            },
+            {
+              id: 'cube-travel',
+              name: '趣旅行',
+              rate: 3.0,
+              tierKey: 'cubeVip',
+              tierRate: 3.3,
+              bonusCap: null,
+              condition: '每日於 CUBE App 切換至「趣旅行」（海外實體、航空、訂房網、可樂/易遊網、高鐵）',
+              payments: ['實體刷卡', '網購線上', 'Apple Pay/Google Pay'],
+              keywords: ['趣旅行', '日本', '韓國', '海外', '出國', '機票', '航空', '華航', '長榮', '星宇', 'agoda', 'booking', 'hotels.com', 'expedia', 'klook', 'kkday', '高鐵', '飯店', '旅遊', '雄獅', '可樂旅遊', '易遊網']
+            },
+            {
+              id: 'cube-select',
+              name: '集精選',
+              rate: 2.0,
+              bonusCap: null,
+              condition: '切換「集精選」2% 無上限（7-11 需綁 OPEN錢包、全家需綁 My FamiPay；全聯限實體卡/PX Pay）',
+              payments: ['OPEN錢包/FamiPay', '實體刷卡'],
+              keywords: ['集精選', '7-11', '7-eleven', '小七', '全家', 'familymart', '超商', '便利商店', '全聯', 'px pay', '家樂福', 'lopia', '中油', '加油', 'ikea', '充電', '停車']
+            },
+            {
+              id: 'cube-pxplus',
+              name: '全支付（2026新權益）',
+              rate: 2.0,
+              bonusCap: null,
+              condition: '切換「全支付」方案，於全支付國內合作通路享 2% 無上限（小樹點可即時折抵）',
+              payments: ['全支付'],
+              keywords: ['全支付', '全聯', '行動支付', '飲料', '餐廳', '日常消費']
+            },
+            {
+              id: 'cube-formosa',
+              name: '台塑家（2026新權益）',
+              rate: 2.0,
+              bonusCap: null,
+              condition: '切換「台塑家」2% 無上限：台塑/台亞/福懋/統一速邁樂加油站、台塑生醫、7-11/全家/萊爾富實體門市',
+              payments: ['實體刷卡', 'Apple Pay/Google Pay'],
+              keywords: ['台塑家', '台塑石油', '台亞', '福懋', '統一速邁樂', '加油', '台塑生醫', '長庚生技', '7-11', '7-eleven', '小七', '全家', '萊爾富', '超商']
+            },
+            {
+              id: 'cube-insurance',
+              name: '保費領券加碼',
+              rate: 1.2,
+              bonusCap: 1000,
+              condition: 'CUBE App 領取保費優惠券享 1.2%（加碼 0.9% 上限 1,000 點，不含第三方支付）',
+              payments: ['實體刷卡', '網購線上'],
+              keywords: ['保費', '保險']
+            }
+          ]
+        },
+        {
+          id: 'esun-unicard',
+          bank: '玉山銀行',
+          name: 'Unicard',
+          color: 'from-teal-600 to-cyan-700',
+          rewardType: '玉山 e point',
+          baseRate: 1.0,
+          validUntil: '2026-12-31',
+          officialUrl: 'https://www.money101.com.tw/blog/%E5%88%87%E6%8F%9B%E5%88%B7%E4%BF%A1%E7%94%A8%E5%8D%A1%E6%AF%94%E4%B8%80%E6%AF%94',
+          owned: false,
+          notes: '以當月最後一次設定方案結算（簡單選3% / 任意選8家3.5% / UP選4.5%）；須完成帳單e化+玉山自扣。',
+          rules: [
+            {
+              id: 'unicard-top100',
+              name: '百大指定特店',
+              rate: 3.5,
+              tierKey: 'unicardPlan',
+              bonusCap: null,
+              condition: '依所選方案：簡單選 3% / 任意選（最多8家）3.5% / UP選 4.5%',
+              payments: ['實體刷卡', '網購線上', 'LINE Pay', 'Apple Pay/Google Pay', '全支付'],
+              keywords: ['百大特店', 'line pay', 'linepay', '全支付', '7-11', '7-eleven', '小七', '全家', '超商', 'momo', '蝦皮', 'shopee', '酷澎', 'coupang', '淘寶', 'uber eats', 'foodpanda', '外送', '新光三越', '百貨', '全聯', '家樂福', '星巴克', '屈臣氏', '康是美', '高鐵', '日本', '海外', '餐廳', '美食', '網購', '電商', '中油', '加油']
+            }
+          ]
+        },
+        {
+          id: 'hsbc-liveplus',
+          bank: '滙豐銀行',
+          name: 'Live+ 現金回饋卡',
+          color: 'from-slate-800 to-slate-950',
+          rewardType: '現金積點',
+          baseRate: 0.88,
+          validUntil: '2026-12-31',
+          officialUrl: 'https://www.hsbc.com.tw/credit-cards/products/liveplus/',
+          owned: false,
+          notes: '免切換！三大通路加碼 3%（月上限 888 點）＋滙豐帳戶自扣加碼 1%（月上限 200 點）。',
+          rules: [
+            {
+              id: 'live-asia-dining',
+              name: '指定國家海外餐飲',
+              rate: 5.88,
+              tierKey: 'hsbcAutoPay',
+              tierOffRate: 4.88,
+              bonusCap: 888,
+              condition: '日/韓/星/馬/泰等指定國家餐廳消費（自扣 5.88% / 未自扣 4.88%）',
+              payments: ['實體刷卡', 'Apple Pay/Google Pay'],
+              keywords: ['日本餐廳', '韓國餐廳', '海外餐飲', '日本美食', '旅遊餐飲']
+            },
+            {
+              id: 'live-top3',
+              name: '餐飲 / 購物 / 娛樂三大通路',
+              rate: 4.88,
+              tierKey: 'hsbcAutoPay',
+              tierOffRate: 3.88,
+              bonusCap: 888,
+              condition: '三大精選通路（自扣 4.88% / 未自扣 3.88%，三大通路加碼月上限 888 點）',
+              payments: ['實體刷卡', '網購線上', 'Apple Pay/Google Pay'],
+              keywords: ['餐廳', '美食', '火鍋', '燒肉', '王品', '麥當勞', '星巴克', 'starbucks', '壽司郎', 'uber eats', 'ubereats', 'foodpanda', '外送', '百貨', '新光三越', 'sogo', '漢神百貨', '遠東百貨', '微風', 'momo', '蝦皮', 'shopee', 'uniqlo', 'ikea', '電影', '威秀', '娛樂', '購物']
+            }
+          ]
+        },
+        {
+          id: 'esun-ubear',
+          bank: '玉山銀行',
+          name: 'U Bear 信用卡',
+          color: 'from-amber-500 to-orange-600',
+          rewardType: '現金回饋',
+          baseRate: 1.0,
+          validUntil: '2027-02-28',
+          officialUrl: 'https://event.esunbank.com.tw/credit/ubear/index.html',
+          owned: true,
+          notes: '免切換、當期帳單直接折抵！活動期間 2026/9/1–2027/2/28，須綁定帳單e化+玉山帳戶自扣。',
+          rules: [
+            {
+              id: 'ubear-sub',
+              name: '指定影音 / AI 數位訂閱',
+              rate: 10.0,
+              bonusCap: 100,
+              condition: '指定數位訂閱享 10%（每期上限 NT$100，刷 NT$1,000 封頂）',
+              payments: ['網購線上'],
+              keywords: ['netflix', 'spotify', 'disney+', 'chatgpt', 'claude', 'gemini', 'nintendo', 'playstation', 'ai訂閱', 'ai服務', '影音訂閱', '訂閱']
+            },
+            {
+              id: 'ubear-cpc',
+              name: '中油 Pay 直營站加油（登錄）',
+              rate: 6.0,
+              bonusCap: 100,
+              condition: '綁定中油 Pay 當月滿 NT$3,000 且登錄（網購 3% + 加碼 3% 上限 100 點）',
+              payments: ['網購線上', '實體刷卡'],
+              keywords: ['中油', '中油pay', '加油']
+            },
+            {
+              id: 'ubear-online',
+              name: '網路消費 & 指定行動支付',
+              rate: 3.0,
+              bonusCap: 150,
+              condition: '基本 1% 無上限 + 網購加碼 2%（加碼月上限 NT$150，刷 NT$7,500 封頂）',
+              payments: ['網購線上', 'LINE Pay', '街口支付'],
+              keywords: ['momo', '蝦皮', 'shopee', 'pchome', '酷澎', 'coupang', '淘寶', 'amazon', '博客來', 'iherb', 'hahow', 'uber eats', 'ubereats', 'foodpanda', '外送', 'line pay', 'linepay', '街口', '街口支付', 'agoda', 'booking', 'klook', '高鐵', '網購', '電商', '行動支付', '線上課程']
+            }
+          ]
+        },
+        {
+          id: 'hsbc-diamond',
+          bank: '滙豐銀行',
+          name: '匯鑽卡',
+          color: 'from-indigo-600 to-blue-700',
+          rewardType: '現金積點',
+          baseRate: 1.0,
+          validUntil: '2026-12-31',
+          officialUrl: 'https://www.hsbc.com.tw/credit-cards/products/cashback-titanium/',
+          owned: false,
+          notes: '20+ 指定通路筆筆 3%；累積滿 5,000 點且帳戶往來達檻可翻倍折抵 NT$10,000（等同 6%）。',
+          rules: [
+            {
+              id: 'diamond-3pct',
+              name: '指定 20+ 通路（翻倍最高 6%）',
+              rate: 3.0,
+              bonusCap: 2000,
+              condition: '街口支付 / PayPal / momo / Uber Eats / 訂房 / 影音 3%（達檻翻倍折抵等同 6%）',
+              payments: ['街口支付', '網購線上'],
+              keywords: ['街口', '街口支付', 'paypal', 'momo', 'uber eats', 'ubereats', 'agoda', 'booking', 'netflix', 'disney+', '行動支付', '外送', '網購', '影音訂閱']
+            }
+          ]
+        },
+        {
+          id: 'sinopac-daway',
+          bank: '永豐銀行',
+          name: 'DAWAY 卡',
+          color: 'from-emerald-500 to-green-600',
+          rewardType: 'LINE POINTS',
+          baseRate: 0.5,
+          validUntil: '2026-12-31',
+          officialUrl: 'https://bank.sinopac.com/sinopacbt/personal/credit-card/introduction/bankcard/DAWAY.html',
+          owned: false,
+          notes: '需達 DAWAY GO 等級（帳戶自扣）；2026 下半年新戶 LINE Pay 最高 8%，舊戶 2%。',
+          rules: [
+            {
+              id: 'daway-linepay',
+              name: 'LINE Pay 一般消費',
+              rate: 2.0,
+              tierKey: 'dawayNewUser',
+              tierRate: 8.0,
+              bonusCap: 300,
+              condition: '綁定 LINE Pay（舊戶 2% 加碼上限 300 點 / 2026下半年新戶最高 8%）',
+              payments: ['LINE Pay'],
+              keywords: ['line pay', 'linepay', '行動支付', '餐廳', '美食', '飲料', '手搖飲', '日常消費', '小額消費']
+            },
+            {
+              id: 'daway-overseas',
+              name: '海外消費',
+              rate: 2.5,
+              bonusCap: null,
+              condition: '海外消費 2.5% 回饋無上限',
+              payments: ['實體刷卡', '網購線上', 'Apple Pay/Google Pay'],
+              keywords: ['海外', '日本', '韓國', '歐美', '出國', '旅遊']
+            }
+          ]
+        },
+        {
+          id: 'dbs-eco',
+          bank: '星展銀行',
+          name: 'eco 永續卡',
+          color: 'from-violet-600 to-purple-700',
+          rewardType: '現金積點',
+          baseRate: 1.0,
+          validUntil: '2026-12-31',
+          officialUrl: 'https://www.dbs.com.tw/personal-zh/cards/dbs_eco/index.html',
+          owned: false,
+          notes: '歐美日韓泰新實體消費最高 5%（含加碼 4% 每期上限 600 點）；國內外一般消費 1% 無上限。',
+          rules: [
+            {
+              id: 'dbs-overseas-dining',
+              name: '海外實體餐廳（登錄）',
+              rate: 10.0,
+              bonusCap: 1000,
+              condition: '2026/9/1–12/31 登錄享海外實體餐廳最高 10%（單日上限 300 / 月上限 1,000）',
+              payments: ['實體刷卡', 'Apple Pay/Google Pay'],
+              keywords: ['日本餐廳', '韓國餐廳', '海外餐飲', '日本美食', '旅遊餐飲']
+            },
+            {
+              id: 'dbs-overseas',
+              name: '指定國家海外實體（日韓泰新美歐）',
+              rate: 5.0,
+              bonusCap: 600,
+              condition: '日本/韓國/泰國/新加坡/美洲/歐洲當地實體消費（加碼 4% 月上限 600 點）',
+              payments: ['實體刷卡', 'Apple Pay/Google Pay'],
+              keywords: ['日本', '韓國', '泰國', '新加坡', '美國', '歐洲', '歐美', '海外', '出國', '旅遊']
+            }
+          ]
+        },
+        {
+          id: 'ubot-jiho',
+          bank: '聯邦銀行',
+          name: '吉鶴卡',
+          color: 'from-rose-500 to-pink-600',
+          rewardType: '現金回饋',
+          baseRate: 1.0,
+          validUntil: '2026-12-31',
+          officialUrl: 'https://activity.ubot.com.tw/2026JiHoCard/index.htm',
+          owned: false,
+          notes: '日本消費 2.5% 無上限；日本感應 QUICPay（Apple Pay/Google Pay）再加碼 2.5%（最高 5%）。',
+          rules: [
+            {
+              id: 'jiho-jp-pay',
+              name: '日本實體（Apple Pay / Google Pay QUICPay）',
+              rate: 5.0,
+              bonusCap: 1000,
+              condition: '日本當地以 QUICPay 感應支付（基本 2.5% 無上限 + 加碼 2.5%）',
+              payments: ['Apple Pay/Google Pay'],
+              keywords: ['日本', 'quicpay', '日本實體', '日本藥妝', '日本超商', '旅遊', '出國', '海外']
+            },
+            {
+              id: 'jiho-jp-base',
+              name: '日本實體 / 日幣消費',
+              rate: 2.5,
+              bonusCap: null,
+              condition: '日幣一般消費 2.5% 回饋無上限（滿 NT$15,000 登錄超額再 +3%）',
+              payments: ['實體刷卡', '網購線上'],
+              keywords: ['日本', '日幣', '日本網購', '海外', '出國', '旅遊']
+            },
+            {
+              id: 'jiho-jp-ic',
+              name: '日本交通卡儲值（登錄）',
+              rate: 1.5,
+              bonusCap: null,
+              condition: '日幣儲值 Suica / ICOCA / PASMO 登錄享 1.5%',
+              payments: ['Apple Pay/Google Pay'],
+              keywords: ['suica', 'icoca', 'pasmo', '西瓜卡', '日本交通']
+            }
+          ]
+        },
+        {
+          id: 'fubon-j',
+          bank: '台北富邦',
+          name: '富邦 J 卡',
+          color: 'from-sky-600 to-blue-700',
+          rewardType: 'LINE POINTS / 現金',
+          baseRate: 1.0,
+          validUntil: '2026-12-31',
+          officialUrl: 'https://www.fubon.com/banking/personal/credit_card/all_card/all_card.htm',
+          owned: false,
+          notes: '日韓泰當地實體消費登錄最高 6%；國內一般消費 1% 無上限。',
+          rules: [
+            {
+              id: 'fubon-j-asia',
+              name: '日韓泰當地實體消費（登錄）',
+              rate: 6.0,
+              bonusCap: 600,
+              condition: '日本 / 韓國 / 泰國當地實體刷卡（含登錄加碼，最高 6%）',
+              payments: ['實體刷卡', 'Apple Pay/Google Pay'],
+              keywords: ['日本', '韓國', '泰國', '海外', '出國', '旅遊']
+            }
+          ]
+        }
+      ];
+
+      const QUICK_CHIPS = [
+        { label: '7-11 / 全家', query: '7-11' },
+        { label: 'momo / 蝦皮', query: '蝦皮' },
+        { label: '餐廳 / 外送', query: 'Uber Eats' },
+        { label: 'LINE Pay', query: 'LINE Pay' },
+        { label: '街口支付', query: '街口支付' },
+        { label: '百貨購物', query: '新光三越' },
+        { label: '日本 / 海外', query: '日本' },
+        { label: 'AI / 影音訂閱', query: 'ChatGPT' },
+        { label: '全聯 / 量販', query: '全聯' },
+        { label: '中油 / 加油', query: '中油' },
+        { label: '高鐵 / 旅遊', query: '高鐵' },
+        { label: '保費', query: '保費' }
+      ];
+
+      const PAYMENT_OPTIONS = [
+        '實體刷卡',
+        '網購線上',
+        'LINE Pay',
+        '街口支付',
+        '台新Pay/台灣Pay',
+        'Apple Pay/Google Pay',
+        'OPEN錢包/FamiPay',
+        '全支付'
+      ];
+
+      // ==================== STATE MANAGEMENT ====================
+      let state = {
+        cards: [],
+        tierSettings: {
+          cubeVip: false,
+          taishinAutoPay: true,
+          unicardPlan: 'any',
+          hsbcAutoPay: true,
+          dawayNewUser: false
+        },
+        monthlyUsage: {},
+        spendLogs: [],
+        dbVersion: DB_VERSION,
+        remoteSyncUrl: '',
+        lastUpdated: '2026-11-22'
+      };
+
+      const todayDay = new Date().getDay();
+      let ui = {
+        activeTab: 'radar',
+        merchantQuery: '',
+        amount: 1000,
+        onlyOwned: false,
+        paymentFilter: 'all',
+        isHoliday: (todayDay === 0 || todayDay === 6),
+        sortBy: 'reward',
+        dbExpiryFilter: 'all',
+        confirmCallback: null
+      };
+
+      function deepClone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed.cards) && parsed.cards.length > 0) {
+              state = Object.assign({}, state, parsed);
+              state.tierSettings = Object.assign({
+                cubeVip: false,
+                taishinAutoPay: true,
+                unicardPlan: 'any',
+                hsbcAutoPay: true,
+                dawayNewUser: false
+              }, parsed.tierSettings || {});
+              state.monthlyUsage = parsed.monthlyUsage || {};
+              state.spendLogs = Array.isArray(parsed.spendLogs) ? parsed.spendLogs : [];
+              // Auto-upgrade built-in cards when DB_VERSION updates, preserving owned status & custom cards
+              if (parsed.dbVersion !== DB_VERSION) {
+                const ownedMap = {};
+                const defaultIds = new Set(DEFAULT_CARDS.map(c => c.id));
+                const customCards = [];
+                state.cards.forEach(c => {
+                  ownedMap[c.id] = !!c.owned;
+                  if (!defaultIds.has(c.id)) customCards.push(c);
+                });
+                const upgradedDefaults = deepClone(DEFAULT_CARDS).map(c => {
+                  if (c.id in ownedMap) c.owned = ownedMap[c.id];
+                  return c;
+                });
+                state.cards = [...customCards, ...upgradedDefaults];
+                state.dbVersion = DB_VERSION;
+                state.lastUpdated = '2026-11-22';
+                saveState();
+              }
+              return;
+            }
+          }
+        } catch (e) {
+          // Fallback to default in-memory state if localStorage is blocked
+        }
+        state.cards = deepClone(DEFAULT_CARDS);
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {
+          // Ignore storage quota or sandbox restrictions
+        }
+      }
+
+      // ==================== HELPERS ====================
+      function escapeHtml(str) {
+        return String(str == null ? '' : str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function getTodayStr() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+
+      function getExpiryStatus(validUntil) {
+        if (!validUntil) return { status: 'valid', days: 999, label: '未設定期限' };
+        const today = new Date(getTodayStr() + 'T00:00:00');
+        const target = new Date(validUntil + 'T00:00:00');
+        if (isNaN(target.getTime())) return { status: 'valid', days: 999, label: validUntil };
+        const diffDays = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+        if (diffDays < 0) return { status: 'expired', days: diffDays, label: `已過期 ${Math.abs(diffDays)} 天` };
+        if (diffDays <= 45) return { status: 'expiring', days: diffDays, label: `剩 ${diffDays} 天到期` };
+        return { status: 'valid', days: diffDays, label: `至 ${validUntil}` };
+      }
+
+      function getEffectiveRuleRate(rule) {
+        if (rule.tierKey === 'cubeVip') {
+          return state.tierSettings.cubeVip ? (rule.tierRate || 3.3) : rule.rate;
+        }
+        if (rule.tierKey === 'taishinAutoPay') {
+          return state.tierSettings.taishinAutoPay ? rule.rate : (rule.tierOffRate || 1.3);
+        }
+        if (rule.tierKey === 'unicardPlan') {
+          const plan = state.tierSettings.unicardPlan;
+          if (plan === 'up') return 4.5;
+          if (plan === 'any') return 3.5;
+          return 3.0;
+        }
+        if (rule.tierKey === 'hsbcAutoPay') {
+          return state.tierSettings.hsbcAutoPay ? rule.rate : (rule.tierOffRate || (rule.rate - 1));
+        }
+        if (rule.tierKey === 'dawayNewUser') {
+          return state.tierSettings.dawayNewUser ? (rule.tierRate || 8.0) : rule.rate;
+        }
+        return Number(rule.rate) || 0;
+      }
+
+      function getRuleUsageKey(cardId, ruleId) {
+        return `${cardId}::${ruleId}`;
+      }
+
+      function calculateReward(card, rule, amount) {
+        const spend = Math.max(0, Number(amount) || 0);
+        const baseRate = Number(card.baseRate) || 0;
+        const rate = rule ? getEffectiveRuleRate(rule) : baseRate;
+        const ruleKey = rule ? getRuleUsageKey(card.id, rule.id) : null;
+        const usedBonus = ruleKey ? (Number(state.monthlyUsage[ruleKey]) || 0) : 0;
+
+        let cap = rule && rule.bonusCap != null && rule.bonusCap !== '' ? Number(rule.bonusCap) : null;
+        if (rule && rule.tierKey === 'dawayNewUser' && state.tierSettings.dawayNewUser) {
+          cap = 800; // 300 舊戶加碼 + 500 新戶加碼
+        }
+
+        let earned = 0;
+        let bonusEarned = 0;
+        let capStatus = 'unlimited';
+        let remainingCap = null;
+
+        if (cap === null || isNaN(cap) || cap <= 0) {
+          earned = spend * (rate / 100);
+          capStatus = 'unlimited';
+        } else {
+          const bonusRate = Math.max(0, rate - baseRate);
+          remainingCap = Math.max(0, cap - usedBonus);
+          const rawBonus = spend * (bonusRate / 100);
+          bonusEarned = Math.min(rawBonus, remainingCap);
+          const baseEarned = spend * (baseRate / 100);
+          earned = baseEarned + bonusEarned;
+
+          if (remainingCap <= 0 && bonusRate > 0) {
+            capStatus = 'full';
+          } else if (rawBonus > remainingCap && bonusRate > 0) {
+            capStatus = 'partial';
+          } else {
+            capStatus = 'ok';
+          }
+        }
+
+        const effectiveYield = spend > 0 ? (earned / spend) * 100 : rate;
+        return {
+          nominalRate: rate,
+          effectiveYield,
+          earned,
+          bonusEarned,
+          cap,
+          usedBonus,
+          remainingCap,
+          capStatus
+        };
+      }
+
+      function showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const el = document.createElement('div');
+        const bg = type === 'error' ? 'bg-rose-600' : type === 'info' ? 'bg-slate-800' : 'bg-emerald-600';
+        el.className = `${bg} text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 pointer-events-auto fade-in`;
+        el.textContent = message;
+        container.appendChild(el);
+        setTimeout(() => {
+          el.style.opacity = '0';
+          el.style.transition = 'opacity 0.25s ease';
+          setTimeout(() => el.remove(), 260);
+        }, 2600);
+      }
+
+      function openConfirm(title, message, onConfirm) {
+        document.getElementById('confirm-title').textContent = title;
+        document.getElementById('confirm-message').textContent = message;
+        ui.confirmCallback = onConfirm;
+        document.getElementById('confirm-modal').classList.remove('hidden');
+      }
+
+      function closeConfirm() {
+        document.getElementById('confirm-modal').classList.add('hidden');
+        ui.confirmCallback = null;
+      }
+
+      function copyTextToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text).catch(() => fallbackCopy(text));
+        }
+        return Promise.resolve(fallbackCopy(text));
+      }
+
+      function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+        } catch (e) {}
+        ta.remove();
+      }
+
+      // ==================== SEARCH & MATCHING ENGINE ====================
+      function getMatchingResults() {
+        const q = ui.merchantQuery.trim().toLowerCase();
+        const paymentFilter = ui.paymentFilter;
+        const results = [];
+
+        state.cards.forEach(card => {
+          if (ui.onlyOwned && !card.owned) return;
+
+          let bestRule = null;
+          let bestCalc = null;
+          let matchedVia = 'base';
+
+          const candidateRules = (card.rules || []).filter(rule => {
+            if (rule.holidayOnly && !ui.isHoliday) return false;
+            if (paymentFilter !== 'all') {
+              const pList = Array.isArray(rule.payments) ? rule.payments : [];
+              if (!pList.includes(paymentFilter)) return false;
+            }
+            // Holiday general-spend rule matches any non-excluded query when isHoliday is active,
+            // and is automatically outranked whenever a higher-rate rule (e.g., 數趣刷 3.3%) also matches.
+            if (rule.holidayOnly && ui.isHoliday) {
+              if (q && Array.isArray(rule.excludeKeywords) && rule.excludeKeywords.some(ex => q.includes(ex.toLowerCase()))) {
+                return false;
+              }
+              return true;
+            }
+            if (!q) return true;
+            const haystacks = [
+              rule.name,
+              rule.condition,
+              card.bank,
+              card.name,
+              ...(Array.isArray(rule.keywords) ? rule.keywords : []),
+              ...(Array.isArray(rule.payments) ? rule.payments : [])
+            ].join(' ').toLowerCase();
+
+            const tokens = q.split(/\s+/).filter(Boolean);
+            return tokens.every(tok => haystacks.includes(tok));
+          });
+
+          const evaluatedRules = candidateRules.map(rule => ({
+            rule,
+            calc: calculateReward(card, rule, ui.amount)
+          })).sort((a, b) => {
+            if (b.calc.earned !== a.calc.earned) return b.calc.earned - a.calc.earned;
+            return b.calc.nominalRate - a.calc.nominalRate;
+          });
+
+          if (evaluatedRules.length > 0) {
+            bestRule = evaluatedRules[0].rule;
+            bestCalc = evaluatedRules[0].calc;
+            matchedVia = q ? 'rule' : 'top-rule';
+          } else {
+            bestCalc = calculateReward(card, null, ui.amount);
+            matchedVia = 'base';
+          }
+
+          const altRules = evaluatedRules.slice(1, 4).map(er => ({
+            name: er.rule.name,
+            rate: Math.round(er.calc.effectiveYield * 100) / 100
+          }));
+
+          results.push({
+            card,
+            rule: bestRule,
+            calc: bestCalc,
+            altRules,
+            matchedVia
+          });
+        });
+
+        results.sort((a, b) => {
+          if (ui.sortBy === 'rate') {
+            if (b.calc.effectiveYield !== a.calc.effectiveYield) return b.calc.effectiveYield - a.calc.effectiveYield;
+            return b.calc.earned - a.calc.earned;
+          }
+          if (b.calc.earned !== a.calc.earned) return b.calc.earned - a.calc.earned;
+          return b.calc.effectiveYield - a.calc.effectiveYield;
+        });
+
+        return results;
+      }
+
+      // ==================== RENDERING ====================
+      function renderAll() {
+        renderNavBadges();
+        renderQuickChips();
+        renderRadar();
+        renderWallet();
+        renderUpdateTab();
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function renderNavBadges() {
+        const ownedCount = state.cards.filter(c => c.owned).length;
+        document.getElementById('nav-wallet-count').textContent = ownedCount;
+
+        const hasExpiring = state.cards.some(c => {
+          const st = getExpiryStatus(c.validUntil).status;
+          return st === 'expired' || st === 'expiring';
+        });
+        document.getElementById('nav-expiry-dot').classList.toggle('hidden', !hasExpiring);
+        document.getElementById('footer-card-count').textContent = `目前收錄 ${state.cards.length} 張卡（已持有 ${ownedCount} 張）`;
+      }
+
+      function renderQuickChips() {
+        const container = document.getElementById('quick-merchant-chips');
+        container.innerHTML = QUICK_CHIPS.map(chip => {
+          const active = ui.merchantQuery.trim().toLowerCase() === chip.query.toLowerCase();
+          const cls = active
+            ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+            : 'bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border-slate-200';
+          return `<button type="button" data-chip-query="${escapeHtml(chip.query)}" class="quick-chip-btn px-3 py-1.5 rounded-full border text-xs font-semibold transition ${cls}">${escapeHtml(chip.label)}</button>`;
+        }).join('');
+      }
+
+      function renderRadar() {
+        const results = getMatchingResults();
+        const container = document.getElementById('radar-results');
+        const summaryEl = document.getElementById('result-summary-text');
+        const metaEl = document.getElementById('result-meta-text');
+        const q = ui.merchantQuery.trim();
+        const spendFormatted = Number(ui.amount || 0).toLocaleString('zh-TW');
+
+        if (q) {
+          const specificMatches = results.filter(r => r.matchedVia === 'rule').length;
+          summaryEl.textContent = specificMatches > 0
+            ? `「${q}」消費 NT$${spendFormatted} 最佳刷卡排行`
+            : `「${q}」未命中特定加碼，依一般消費回饋排行`;
+          metaEl.textContent = `共比較 ${results.length} 張卡（命中專屬規則 ${specificMatches} 張）`;
+        } else {
+          summaryEl.textContent = `全通路熱門最高回饋總覽（試算金額 NT$${spendFormatted}）`;
+          metaEl.textContent = `輸入上方店家或點選場景可精準比對`;
+        }
+
+        if (results.length === 0) {
+          container.innerHTML = `
+            <div class="bg-white rounded-2xl border border-slate-200 p-8 text-center space-y-3">
+              <div class="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+                <i data-lucide="credit-card" class="w-6 h-6"></i>
+              </div>
+              <div class="text-sm font-bold text-slate-800">目前沒有符合條件的卡片</div>
+              <p class="text-xs text-slate-500">請嘗試關閉「只看我持有的卡片」，或到「我的皮夾」勾選您持有的信用卡。</p>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = results.map((item, idx) => {
+          const { card, rule, calc, altRules = [], matchedVia } = item;
+          const isTop = idx === 0 && calc.earned > 0;
+          const expiry = getExpiryStatus(card.validUntil);
+          const expiryBadgeCls = expiry.status === 'expired'
+            ? 'bg-rose-50 text-rose-700 border-rose-200'
+            : expiry.status === 'expiring'
+              ? 'bg-amber-50 text-amber-700 border-amber-200'
+              : 'bg-slate-50 text-slate-500 border-slate-200';
+
+          const earnedRounded = Math.round(calc.earned * 10) / 10;
+          const yieldRounded = Math.round(calc.effectiveYield * 100) / 100;
+          const nominalRounded = Math.round(calc.nominalRate * 100) / 100;
+
+          let capHtml = '';
+          if (calc.cap === null) {
+            capHtml = `<span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">無回饋上限</span>`;
+          } else {
+            const pct = Math.min(100, Math.round((calc.usedBonus / calc.cap) * 100));
+            const capWarn = calc.capStatus === 'full'
+              ? '<span class="text-rose-600 font-bold">（本月加碼已滿，僅計基本回饋）</span>'
+              : calc.capStatus === 'partial'
+                ? '<span class="text-amber-600 font-bold">（本筆將觸及加碼上限）</span>'
+                : '';
+            capHtml = `
+              <div class="mt-2 pt-2 border-t border-slate-100">
+                <div class="flex items-center justify-between text-[11px] text-slate-500 mb-1">
+                  <span>本月加碼額度：已用 ${Math.round(calc.usedBonus)} / 上限 ${calc.cap} ${escapeHtml(card.rewardType)} ${capWarn}</span>
+                  <span class="font-bold text-slate-700">剩餘 ${Math.max(0, Math.round(calc.remainingCap))}</span>
+                </div>
+                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full ${pct >= 100 ? 'bg-rose-500' : pct >= 75 ? 'bg-amber-500' : 'bg-emerald-500'} rounded-full transition-all" style="width:${pct}%"></div>
+                </div>
+              </div>`;
+          }
+
+          const borderCls = isTop
+            ? 'border-emerald-400 ring-2 ring-emerald-100 bg-gradient-to-br from-white via-white to-emerald-50/40'
+            : 'border-slate-200 bg-white';
+
+          const ruleLabel = rule ? rule.name : '一般消費基本回饋';
+          const conditionText = rule ? rule.condition : `未命中指定加碼，適用國內外一般消費基本回饋 ${card.baseRate}%`;
+
+          return `
+            <article class="card-lift rounded-2xl border ${borderCls} p-4 sm:p-5">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <!-- Left: Card Info -->
+                <div class="flex items-start gap-3.5 min-w-0 flex-1">
+                  <!-- Rank + Mini Card Face -->
+                  <div class="flex flex-col items-center gap-1.5 shrink-0">
+                    <div class="w-14 h-9 rounded-lg bg-gradient-to-br ${escapeHtml(card.color || 'from-slate-700 to-slate-900')} text-white p-1.5 flex flex-col justify-between shadow-xs">
+                      <span class="text-[8px] font-bold opacity-80 truncate">${escapeHtml(card.bank)}</span>
+                      <span class="text-[9px] font-extrabold leading-none">#${idx + 1}</span>
+                    </div>
+                    ${card.owned ? '<span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded">已持有</span>' : ''}
+                  </div>
+
+                  <div class="min-w-0 flex-1 space-y-1.5">
+                    <div class="flex flex-wrap items-center gap-2">
+                      ${isTop ? '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[11px] font-extrabold shadow-xs">🏆 最高回饋首選</span>' : ''}
+                      <h3 class="text-sm sm:text-base font-extrabold text-slate-900">${escapeHtml(card.bank)} ${escapeHtml(card.name)}</h3>
+                      <span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-slate-100 text-slate-700">${escapeHtml(ruleLabel)}</span>
+                    </div>
+
+                    <p class="text-xs text-slate-600 flex items-start gap-1.5 leading-relaxed">
+                      <i data-lucide="zap" class="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5"></i>
+                      <span>${escapeHtml(conditionText)}</span>
+                    </p>
+                    ${altRules.length > 0 ? `<div class="flex flex-wrap items-center gap-1 text-[11px] text-slate-500"><span class="font-semibold">此卡其他適用方案：</span>${altRules.map(ar => `<span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">${escapeHtml(ar.name)} ${ar.rate}%</span>`).join('')}</div>` : ''}
+
+                    <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+                      ${rule && Array.isArray(rule.payments) ? rule.payments.map(p => `<span class="px-2 py-0.5 rounded-md bg-indigo-50 text-indigo-700 text-[10px] font-semibold">${escapeHtml(p)}</span>`).join('') : ''}
+                      <span class="px-2 py-0.5 rounded-md border text-[10px] font-semibold ${expiryBadgeCls}">${escapeHtml(expiry.label)}</span>
+                      ${card.officialUrl ? `<a href="${escapeHtml(card.officialUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-0.5 text-[11px] font-semibold text-emerald-700 hover:underline ml-1">官網核對<i data-lucide="external-link" class="w-3 h-3"></i></a>` : ''}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right: Calculated Reward & Action -->
+                <div class="flex sm:flex-col items-center sm:items-end justify-between gap-2 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100 shrink-0">
+                  <div class="text-left sm:text-right">
+                    <div class="flex items-baseline sm:justify-end gap-1">
+                      <span class="text-2xl sm:text-3xl font-black tracking-tight ${isTop ? 'text-emerald-600' : 'text-slate-900'}">${earnedRounded.toLocaleString('zh-TW')}</span>
+                      <span class="text-xs font-bold text-slate-500">${escapeHtml(card.rewardType)}</span>
+                    </div>
+                    <div class="text-xs font-bold ${isTop ? 'text-emerald-700' : 'text-slate-600'}">
+                      實質 ${yieldRounded}% ${yieldRounded !== nominalRounded ? `<span class="text-[10px] text-slate-400 line-through ml-0.5">${nominalRounded}%</span>` : ''}
+                    </div>
+                  </div>
+
+                  <button type="button"
+                    data-log-card="${escapeHtml(card.id)}"
+                    data-log-rule="${escapeHtml(rule ? rule.id : '')}"
+                    class="log-spend-btn px-3 py-1.5 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 text-xs font-bold transition flex items-center gap-1">
+                    <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                    <span>記一筆消費</span>
+                  </button>
+                </div>
+              </div>
+              ${capHtml}
+            </article>`;
+        }).join('');
+      }
+
+      function renderWallet() {
+        // Sync tier controls
+        document.getElementById('tier-cube-vip').checked = !!state.tierSettings.cubeVip;
+        document.getElementById('tier-taishin-autopay').checked = !!state.tierSettings.taishinAutoPay;
+        document.getElementById('tier-unicard-plan').value = state.tierSettings.unicardPlan || 'any';
+        document.getElementById('tier-hsbc-autopay').checked = !!state.tierSettings.hsbcAutoPay;
+        document.getElementById('tier-daway-new').checked = !!state.tierSettings.dawayNewUser;
+
+        const grid = document.getElementById('wallet-cards-grid');
+        grid.innerHTML = state.cards.map(card => {
+          const cappedRules = (card.rules || []).filter(r => r.bonusCap != null && r.bonusCap > 0);
+          const capBars = cappedRules.map(r => {
+            const used = Number(state.monthlyUsage[getRuleUsageKey(card.id, r.id)]) || 0;
+            const cap = (r.tierKey === 'dawayNewUser' && state.tierSettings.dawayNewUser) ? 800 : Number(r.bonusCap);
+            const pct = Math.min(100, Math.round((used / cap) * 100));
+            return `
+              <div class="mt-2">
+                <div class="flex justify-between text-[11px] text-slate-600 mb-0.5">
+                  <span class="truncate pr-2">${escapeHtml(r.name)}</span>
+                  <span class="font-bold shrink-0">${Math.round(used)} / ${cap}</span>
+                </div>
+                <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full ${pct >= 100 ? 'bg-rose-500' : 'bg-emerald-500'} rounded-full" style="width:${pct}%"></div>
+                </div>
+              </div>`;
+          }).join('');
+
+          return `
+            <div class="bg-white rounded-2xl border ${card.owned ? 'border-emerald-300 shadow-xs' : 'border-slate-200'} p-4 flex flex-col justify-between gap-3">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="w-12 h-8 rounded-lg bg-gradient-to-br ${escapeHtml(card.color || 'from-slate-700 to-slate-900')} text-white flex items-center justify-center text-[10px] font-extrabold shrink-0 shadow-xs">
+                    ${escapeHtml(card.bank.slice(0, 2))}
+                  </div>
+                  <div class="min-w-0">
+                    <div class="text-sm font-extrabold text-slate-900 truncate">${escapeHtml(card.bank)} ${escapeHtml(card.name)}</div>
+                    <div class="text-[11px] text-slate-500">${escapeHtml(card.rewardType)}・基本 ${card.baseRate}%・${(card.rules || []).length} 條規則</div>
+                  </div>
+                </div>
+                <label class="inline-flex items-center gap-1.5 cursor-pointer shrink-0 select-none">
+                  <input type="checkbox" data-toggle-owned="${escapeHtml(card.id)}" ${card.owned ? 'checked' : ''} class="toggle-owned-cb w-4 h-4 accent-emerald-600 rounded cursor-pointer" />
+                  <span class="text-xs font-bold ${card.owned ? 'text-emerald-700' : 'text-slate-400'}">${card.owned ? '已持有' : '未持有'}</span>
+                </label>
+              </div>
+              <p class="text-xs text-slate-500 leading-relaxed">${escapeHtml(card.notes || '')}</p>
+              ${capBars ? `<div class="pt-2 border-t border-slate-100">${capBars}</div>` : ''}
+            </div>`;
+        }).join('');
+
+        // Render Spend Logs
+        const logContainer = document.getElementById('spend-log-container');
+        if (!state.spendLogs || state.spendLogs.length === 0) {
+          logContainer.innerHTML = `
+            <div class="text-center py-6 text-xs text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+              本月尚無紀錄。結帳時在「快速查卡」點擊「記一筆消費」，即可自動追蹤回饋上限！
+            </div>`;
+        } else {
+          const totalSpend = state.spendLogs.reduce((s, l) => s + Number(l.amount || 0), 0);
+          const totalReward = state.spendLogs.reduce((s, l) => s + Number(l.earnedReward || 0), 0);
+          logContainer.innerHTML = `
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-800 text-xs font-bold">
+              <span>本月已記錄 ${state.spendLogs.length} 筆消費，總金額 NT$${totalSpend.toLocaleString('zh-TW')}</span>
+              <span>累計預估回饋：${Math.round(totalReward * 10) / 10} 元/點</span>
+            </div>
+            <div class="divide-y divide-slate-100">
+              ${state.spendLogs.slice(0, 20).map(log => `
+                <div class="py-2.5 flex items-center justify-between gap-3 text-xs">
+                  <div class="min-w-0">
+                    <div class="font-bold text-slate-800 truncate">${escapeHtml(log.merchant || '一般消費')} <span class="font-normal text-slate-500">・${escapeHtml(log.cardName)}（${escapeHtml(log.ruleName)}）</span></div>
+                    <div class="text-[11px] text-slate-400">${escapeHtml(log.date)}</div>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <div class="font-bold text-slate-900">NT$${Number(log.amount).toLocaleString('zh-TW')}</div>
+                    <div class="text-[11px] font-bold text-emerald-600">+${Math.round(log.earnedReward * 10) / 10} ${escapeHtml(log.rewardType || '')}</div>
+                  </div>
+                </div>`).join('')}
+            </div>`;
+        }
+      }
+
+      function renderUpdateTab() {
+        let validCount = 0, expiringCount = 0, expiredCount = 0;
+        state.cards.forEach(c => {
+          const st = getExpiryStatus(c.validUntil).status;
+          if (st === 'expired') expiredCount++;
+          else if (st === 'expiring') expiringCount++;
+          else validCount++;
+        });
+        document.getElementById('stat-valid-count').textContent = validCount;
+        document.getElementById('stat-expiring-count').textContent = expiringCount;
+        document.getElementById('stat-expired-count').textContent = expiredCount;
+
+        document.getElementById('remote-url-input').value = state.remoteSyncUrl || '';
+        document.getElementById('last-sync-label').textContent = state.lastUpdated ? `更新日期：${state.lastUpdated}` : '';
+
+        const filteredCards = state.cards.filter(c => {
+          const st = getExpiryStatus(c.validUntil).status;
+          if (ui.dbExpiryFilter === 'expiring') return st === 'expiring' || st === 'expired';
+          if (ui.dbExpiryFilter === 'valid') return st === 'valid';
+          return true;
+        });
+
+        const listEl = document.getElementById('db-cards-list');
+        if (filteredCards.length === 0) {
+          listEl.innerHTML = `<div class="text-center py-6 text-xs text-slate-400">此篩選條件下沒有卡片。</div>`;
+          return;
+        }
+
+        listEl.innerHTML = filteredCards.map(card => {
+          const expiry = getExpiryStatus(card.validUntil);
+          const badgeCls = expiry.status === 'expired'
+            ? 'bg-rose-100 text-rose-700'
+            : expiry.status === 'expiring'
+              ? 'bg-amber-100 text-amber-700'
+              : 'bg-emerald-50 text-emerald-700';
+
+          return `
+            <div class="rounded-xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-slate-300 transition">
+              <div class="space-y-1 min-w-0">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="text-sm font-extrabold text-slate-900">${escapeHtml(card.bank)} ${escapeHtml(card.name)}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${badgeCls}">${escapeHtml(expiry.label)}</span>
+                  <span class="text-[11px] text-slate-500">基本 ${card.baseRate}%・${(card.rules || []).length} 條加碼規則</span>
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  ${(card.rules || []).map(r => `<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[11px] font-medium">${escapeHtml(r.name)} ${getEffectiveRuleRate(r)}%</span>`).join('')}
+                </div>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                ${card.officialUrl ? `<a href="${escapeHtml(card.officialUrl)}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 text-xs font-semibold">官網</a>` : ''}
+                <button type="button" data-edit-card="${escapeHtml(card.id)}" class="edit-card-btn px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 text-xs font-bold transition">編輯規則</button>
+                <button type="button" data-delete-card="${escapeHtml(card.id)}" class="delete-card-btn px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-bold transition">刪除</button>
+              </div>
+            </div>`;
+        }).join('');
+      }
+
+      // ==================== CARD EDITOR MODAL ====================
+      function createRuleRowHtml(rule = {}) {
+        const payments = Array.isArray(rule.payments) ? rule.payments : ['實體刷卡', '網購線上'];
+        const keywordsStr = Array.isArray(rule.keywords) ? rule.keywords.join(', ') : '';
+        return `
+          <div class="rule-editor-row p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-extrabold text-slate-700">加碼規則</span>
+              <button type="button" class="remove-rule-row-btn text-xs font-bold text-rose-600 hover:text-rose-700">移除</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-0.5">規則名稱 *</label>
+                <input type="text" class="rule-name w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs" required value="${escapeHtml(rule.name || '')}" placeholder="例如：樂饗購 / 網購加碼" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-0.5">總回饋率 (%) *</label>
+                <input type="number" step="0.01" min="0" max="100" class="rule-rate w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs" required value="${rule.rate != null ? rule.rate : 3}" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-0.5">加碼月上限（留空=無上限）</label>
+                <input type="number" min="0" step="1" class="rule-cap w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs" value="${rule.bonusCap != null ? rule.bonusCap : ''}" placeholder="無上限" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-0.5">切換方案 / 支付條件提醒</label>
+              <input type="text" class="rule-condition w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs" value="${escapeHtml(rule.condition || '')}" placeholder="例如：需切換至指定方案或綁定 LINE Pay" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-0.5">適用店家 / 網站關鍵字（以逗號分隔）</label>
+              <input type="text" class="rule-keywords w-full px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs" value="${escapeHtml(keywordsStr)}" placeholder="蝦皮, momo, 7-11, 星巴克, 餐廳..." />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">支援支付方式</label>
+              <div class="flex flex-wrap gap-2">
+                ${PAYMENT_OPTIONS.map(p => `
+                  <label class="inline-flex items-center gap-1 text-[11px] text-slate-700 bg-white px-2 py-1 rounded border border-slate-200 cursor-pointer">
+                    <input type="checkbox" class="rule-payment accent-emerald-600" value="${escapeHtml(p)}" ${payments.includes(p) ? 'checked' : ''} />
+                    <span>${escapeHtml(p)}</span>
+                  </label>`).join('')}
+              </div>
+            </div>
+          </div>`;
+      }
+
+      function openCardEditor(cardId = null) {
+        const modal = document.getElementById('card-editor-modal');
+        const rulesContainer = document.getElementById('edit-rules-container');
+
+        if (cardId) {
+          const card = state.cards.find(c => c.id === cardId);
+          if (!card) return;
+          document.getElementById('editor-modal-title').textContent = `編輯「${card.bank} ${card.name}」`;
+          document.getElementById('edit-card-id').value = card.id;
+          document.getElementById('edit-bank').value = card.bank;
+          document.getElementById('edit-name').value = card.name;
+          document.getElementById('edit-reward-type').value = card.rewardType || '現金回饋';
+          document.getElementById('edit-base-rate').value = card.baseRate != null ? card.baseRate : 1.0;
+          document.getElementById('edit-valid-until').value = card.validUntil || '2026-12-31';
+          document.getElementById('edit-color').value = card.color || 'from-emerald-600 to-teal-700';
+          document.getElementById('edit-official-url').value = card.officialUrl || '';
+          document.getElementById('edit-notes').value = card.notes || '';
+          rulesContainer.innerHTML = (card.rules || []).map(r => createRuleRowHtml(r)).join('');
+        } else {
+          document.getElementById('editor-modal-title').textContent = '新增信用卡與回饋規則';
+          document.getElementById('edit-card-id').value = '';
+          document.getElementById('edit-bank').value = '';
+          document.getElementById('edit-name').value = '';
+          document.getElementById('edit-reward-type').value = '現金回饋';
+          document.getElementById('edit-base-rate').value = '1.0';
+          document.getElementById('edit-valid-until').value = '2027-06-30';
+          document.getElementById('edit-color').value = 'from-emerald-600 to-teal-700';
+          document.getElementById('edit-official-url').value = '';
+          document.getElementById('edit-notes').value = '';
+          rulesContainer.innerHTML = createRuleRowHtml({ name: '指定通路加碼', rate: 3.0, payments: ['實體刷卡', '網購線上'] });
+        }
+
+        modal.classList.remove('hidden');
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function closeCardEditor() {
+        document.getElementById('card-editor-modal').classList.add('hidden');
+      }
+
+      function handleSaveCardForm(e) {
+        e.preventDefault();
+        const existingId = document.getElementById('edit-card-id').value.trim();
+        const existingCard = existingId ? state.cards.find(c => c.id === existingId) : null;
+
+        const ruleRows = Array.from(document.querySelectorAll('#edit-rules-container .rule-editor-row'));
+        const rules = ruleRows.map((row, idx) => {
+          const name = row.querySelector('.rule-name').value.trim();
+          const rate = parseFloat(row.querySelector('.rule-rate').value) || 0;
+          const capRaw = row.querySelector('.rule-cap').value.trim();
+          const bonusCap = capRaw === '' ? null : parseFloat(capRaw);
+          const condition = row.querySelector('.rule-condition').value.trim();
+          const keywords = row.querySelector('.rule-keywords').value
+            .split(/[,，、\n]/)
+            .map(s => s.trim())
+            .filter(Boolean);
+          const payments = Array.from(row.querySelectorAll('.rule-payment:checked')).map(cb => cb.value);
+
+          // Preserve dynamic tierKey if editing same rule index
+          const oldRule = existingCard && existingCard.rules && existingCard.rules[idx] && existingCard.rules[idx].name === name
+            ? existingCard.rules[idx]
+            : null;
+
+          return {
+            id: oldRule ? oldRule.id : `rule-${Date.now()}-${idx}`,
+            name,
+            rate,
+            bonusCap: isNaN(bonusCap) ? null : bonusCap,
+            condition,
+            payments: payments.length > 0 ? payments : ['實體刷卡'],
+            keywords,
+            ...(oldRule && oldRule.tierKey ? { tierKey: oldRule.tierKey, tierRate: oldRule.tierRate, tierOffRate: oldRule.tierOffRate } : {})
+          };
+        });
+
+        const newCard = {
+          id: existingId || `custom-${Date.now()}`,
+          bank: document.getElementById('edit-bank').value.trim(),
+          name: document.getElementById('edit-name').value.trim(),
+          rewardType: document.getElementById('edit-reward-type').value.trim() || '現金回饋',
+          baseRate: parseFloat(document.getElementById('edit-base-rate').value) || 0,
+          validUntil: document.getElementById('edit-valid-until').value,
+          color: document.getElementById('edit-color').value,
+          officialUrl: document.getElementById('edit-official-url').value.trim(),
+          notes: document.getElementById('edit-notes').value.trim(),
+          owned: existingCard ? existingCard.owned : true,
+          rules
+        };
+
+        if (existingCard) {
+          const idx = state.cards.findIndex(c => c.id === existingId);
+          state.cards[idx] = newCard;
+          showToast(`已更新「${newCard.bank} ${newCard.name}」權益`);
+        } else {
+          state.cards.unshift(newCard);
+          showToast(`已新增「${newCard.bank} ${newCard.name}」至資料庫`);
+        }
+
+        state.lastUpdated = getTodayStr();
+        saveState();
+        closeCardEditor();
+        renderAll();
+      }
+
+      // ==================== JSON IMPORT / SYNC ====================
+      function validateAndApplyCardsJson(data, keepOwned = true) {
+        const incoming = Array.isArray(data) ? data : (data && Array.isArray(data.cards) ? data.cards : null);
+        if (!incoming || incoming.length === 0) {
+          throw new Error('JSON 格式不符：必須為信用卡陣列或包含 cards 陣列的物件。');
+        }
+        const ownedMap = {};
+        state.cards.forEach(c => { ownedMap[c.id] = !!c.owned; });
+
+        const sanitized = incoming.map((c, i) => {
+          if (!c.bank || !c.name) throw new Error(`第 ${i + 1} 張卡缺少 bank 或 name 欄位。`);
+          const id = c.id || `imp-${Date.now()}-${i}`;
+          return {
+            id,
+            bank: String(c.bank),
+            name: String(c.name),
+            color: c.color || 'from-emerald-600 to-teal-700',
+            rewardType: c.rewardType || '現金回饋',
+            baseRate: Number(c.baseRate) || 0,
+            validUntil: c.validUntil || '2026-12-31',
+            officialUrl: c.officialUrl || '',
+            notes: c.notes || '',
+            owned: keepOwned && (id in ownedMap) ? ownedMap[id] : !!c.owned,
+            rules: Array.isArray(c.rules) ? c.rules.map((r, ri) => ({
+              id: r.id || `${id}-r${ri}`,
+              name: String(r.name || '加碼規則'),
+              rate: Number(r.rate) || 0,
+              bonusCap: r.bonusCap === null || r.bonusCap === undefined || r.bonusCap === '' ? null : Number(r.bonusCap),
+              condition: String(r.condition || ''),
+              payments: Array.isArray(r.payments) ? r.payments : ['實體刷卡', '網購線上'],
+              keywords: Array.isArray(r.keywords) ? r.keywords : [],
+              ...(r.tierKey ? { tierKey: r.tierKey, tierRate: r.tierRate, tierOffRate: r.tierOffRate } : {})
+            })) : []
+          };
+        });
+
+        state.cards = sanitized;
+        state.lastUpdated = getTodayStr();
+        saveState();
+        renderAll();
+        return sanitized.length;
+      }
+
+      async function handleRemoteSync() {
+        const urlInput = document.getElementById('remote-url-input');
+        const statusEl = document.getElementById('remote-sync-status');
+        const url = urlInput.value.trim();
+
+        if (!url || !url.startsWith('https://')) {
+          statusEl.className = 'text-xs rounded-lg p-2.5 bg-rose-50 text-rose-700 font-semibold';
+          statusEl.textContent = '請輸入有效的公開 HTTPS JSON 網址（例如 GitHub Gist Raw URL）。';
+          return;
+        }
+
+        statusEl.className = 'text-xs rounded-lg p-2.5 bg-slate-100 text-slate-700 font-semibold';
+        statusEl.textContent = '正在連線拉取最新信用卡回饋資料庫...';
+
+        try {
+          const resp = await fetch(url, { cache: 'no-store' });
+          if (!resp.ok) throw new Error(`HTTP 錯誤狀態碼 ${resp.status}`);
+          const json = await resp.json();
+          const keepOwned = document.getElementById('remote-merge-checkbox').checked;
+          const count = validateAndApplyCardsJson(json, keepOwned);
+          state.remoteSyncUrl = url;
+          saveState();
+          statusEl.className = 'text-xs rounded-lg p-2.5 bg-emerald-50 text-emerald-700 font-semibold';
+          statusEl.textContent = `同步成功！已更新 ${count} 張信用卡權益（${getTodayStr()}）。`;
+          showToast(`已從遠端同步 ${count} 張信用卡權益`);
+        } catch (err) {
+          statusEl.className = 'text-xs rounded-lg p-2.5 bg-rose-50 text-rose-700 font-semibold';
+          statusEl.textContent = `同步失敗：${err.message || '無法讀取該網址，請確認網址為公開且允許跨域存取的 JSON 檔案。'}`;
+        }
+      }
+
+      function buildAiUpdatePrompt() {
+        const cardNames = state.cards.map(c => `${c.bank}${c.name}`).join('、');
+        return `請幫我查詢目前（${getTodayStr()}）台灣以下信用卡的最新官方回饋權益：${cardNames}。\n\n請直接輸出純 JSON 陣列（不要加多餘說明），格式如下：\n[\n  {\n    "id": "唯一英文ID",\n    "bank": "銀行名稱",\n    "name": "卡片名稱",\n    "rewardType": "現金回饋 / 小樹點 / 台新Point / LINE POINTS",\n    "baseRate": 1.0,\n    "validUntil": "YYYY-MM-DD",\n    "officialUrl": "官方權益網址",\n    "notes": "切換方式或自扣條件簡述",\n    "rules": [\n      {\n        "id": "規則ID",\n        "name": "方案或通路名稱",\n        "rate": 3.0,\n        "bonusCap": 500,\n        "condition": "使用條件與上限說明",\n        "payments": ["實體刷卡", "網購線上", "LINE Pay"],\n        "keywords": ["蝦皮", "momo", "7-11", "餐廳"]\n      }\n    ]\n  }\n]\n備註：bonusCap 若無上限請填 null。`;
+      }
+
+      // ==================== EVENT LISTENERS ====================
+      function switchTab(tabName) {
+        ui.activeTab = tabName;
+        ['radar', 'wallet', 'update'].forEach(t => {
+          const view = document.getElementById(`view-${t}`);
+          const btn = document.getElementById(`tab-btn-${t}`);
+          const isActive = t === tabName;
+          view.classList.toggle('hidden', !isActive);
+          if (isActive) {
+            btn.classList.add('bg-white', 'text-emerald-700', 'shadow-sm');
+            btn.classList.remove('text-slate-600');
+          } else {
+            btn.classList.remove('bg-white', 'text-emerald-700', 'shadow-sm');
+            btn.classList.add('text-slate-600');
+          }
+        });
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      function bindEvents() {
+        // Tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        // Merchant search input
+        const merchantInput = document.getElementById('merchant-input');
+        const clearBtn = document.getElementById('clear-merchant-btn');
+        merchantInput.addEventListener('input', () => {
+          ui.merchantQuery = merchantInput.value;
+          clearBtn.classList.toggle('hidden', !ui.merchantQuery);
+          renderQuickChips();
+          renderRadar();
+          if (window.lucide) window.lucide.createIcons();
+        });
+        clearBtn.addEventListener('click', () => {
+          merchantInput.value = '';
+          ui.merchantQuery = '';
+          clearBtn.classList.add('hidden');
+          renderQuickChips();
+          renderRadar();
+          merchantInput.focus();
+          if (window.lucide) window.lucide.createIcons();
+        });
+
+        // Amount input & quick amount buttons
+        const amountInput = document.getElementById('amount-input');
+        amountInput.addEventListener('input', () => {
+          ui.amount = Math.max(0, Number(amountInput.value) || 0);
+          renderRadar();
+          if (window.lucide) window.lucide.createIcons();
+        });
+        document.querySelectorAll('.quick-amt-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            ui.amount = Number(btn.dataset.amount) || 1000;
+            amountInput.value = ui.amount;
+            renderRadar();
+            if (window.lucide) window.lucide.createIcons();
+          });
+        });
+
+        // Quick merchant chips (event delegation)
+        document.getElementById('quick-merchant-chips').addEventListener('click', e => {
+          const btn = e.target.closest('.quick-chip-btn');
+          if (!btn) return;
+          const q = btn.dataset.chipQuery;
+          if (ui.merchantQuery.trim().toLowerCase() === q.toLowerCase()) {
+            ui.merchantQuery = '';
+            merchantInput.value = '';
+            clearBtn.classList.add('hidden');
+          } else {
+            ui.merchantQuery = q;
+            merchantInput.value = q;
+            clearBtn.classList.remove('hidden');
+          }
+          renderQuickChips();
+          renderRadar();
+          if (window.lucide) window.lucide.createIcons();
+        });
+
+        // Filters
+        document.getElementById('filter-owned-toggle').addEventListener('change', e => {
+          ui.onlyOwned = e.target.checked;
+          renderRadar();
+          if (window.lucide) window.lucide.createIcons();
+        });
+        document.getElementById('filter-payment-select').addEventListener('change', e => {
+          ui.paymentFilter = e.target.value;
+          renderRadar();
+          if (window.lucide) window.lucide.createIcons();
+        });
+        const holidayToggle = document.getElementById('filter-holiday-toggle');
+        holidayToggle.checked = ui.isHoliday;
+        holidayToggle.addEventListener('change', e => {
+          ui.isHoliday = e.target.checked;
+          renderRadar();
+          if (window.lucide) window.lucide.createIcons();
+        });
+        document.getElementById('sort-select').addEventListener('change', e => {
+          ui.sortBy = e.target.value;
+          renderRadar();
+          if (window.lucide) window.lucide.createIcons();
+        });
+
+        // Log spend button (event delegation in radar results)
+        document.getElementById('radar-results').addEventListener('click', e => {
+          const btn = e.target.closest('.log-spend-btn');
+          if (!btn) return;
+          const cardId = btn.dataset.logCard;
+          const ruleId = btn.dataset.logRule;
+          const card = state.cards.find(c => c.id === cardId);
+          if (!card) return;
+          const rule = ruleId ? (card.rules || []).find(r => r.id === ruleId) : null;
+          const calc = calculateReward(card, rule, ui.amount);
+
+          if (rule && calc.cap !== null && calc.bonusEarned > 0) {
+            const key = getRuleUsageKey(card.id, rule.id);
+            state.monthlyUsage[key] = (Number(state.monthlyUsage[key]) || 0) + calc.bonusEarned;
+          }
+
+          state.spendLogs.unshift({
+            id: `log-${Date.now()}`,
+            date: new Date().toLocaleString('zh-TW', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
+            merchant: ui.merchantQuery.trim() || (rule ? rule.name : '一般消費'),
+            amount: ui.amount,
+            cardId: card.id,
+            cardName: `${card.bank} ${card.name}`,
+            ruleName: rule ? rule.name : '一般消費',
+            earnedReward: calc.earned,
+            rewardType: card.rewardType
+          });
+
+          saveState();
+          renderAll();
+          showToast(`已記錄 NT$${Number(ui.amount).toLocaleString('zh-TW')} 消費（預估回饋 +${Math.round(calc.earned * 10) / 10} ${card.rewardType}）`);
+        });
+
+        // Wallet tier settings
+        const syncTiers = () => {
+          state.tierSettings.cubeVip = document.getElementById('tier-cube-vip').checked;
+          state.tierSettings.taishinAutoPay = document.getElementById('tier-taishin-autopay').checked;
+          state.tierSettings.unicardPlan = document.getElementById('tier-unicard-plan').value;
+          state.tierSettings.hsbcAutoPay = document.getElementById('tier-hsbc-autopay').checked;
+          state.tierSettings.dawayNewUser = document.getElementById('tier-daway-new').checked;
+          saveState();
+          renderAll();
+          showToast('已更新個人權益等級設定', 'info');
+        };
+        ['tier-cube-vip', 'tier-taishin-autopay', 'tier-unicard-plan', 'tier-hsbc-autopay', 'tier-daway-new'].forEach(id => {
+          document.getElementById(id).addEventListener('change', syncTiers);
+        });
+
+        // Wallet card ownership toggle
+        document.getElementById('wallet-cards-grid').addEventListener('change', e => {
+          const cb = e.target.closest('.toggle-owned-cb');
+          if (!cb) return;
+          const card = state.cards.find(c => c.id === cb.dataset.toggleOwned);
+          if (!card) return;
+          card.owned = cb.checked;
+          saveState();
+          renderAll();
+        });
+
+        // Reset monthly spend
+        document.getElementById('reset-monthly-btn').addEventListener('click', () => {
+          openConfirm('重置本月累積額度', '確定要清除本月所有已記錄的消費與加碼回饋上限進度嗎？（適合每個月結帳日後重置）', () => {
+            state.monthlyUsage = {};
+            state.spendLogs = [];
+            saveState();
+            renderAll();
+            showToast('已重置本月已刷額度與紀錄');
+          });
+        });
+
+        // Update tab: add/edit/delete card
+        document.getElementById('wallet-add-card-btn').addEventListener('click', () => openCardEditor(null));
+        document.getElementById('db-add-card-btn').addEventListener('click', () => openCardEditor(null));
+
+        document.getElementById('db-expiry-filter').addEventListener('change', e => {
+          ui.dbExpiryFilter = e.target.value;
+          renderUpdateTab();
+          if (window.lucide) window.lucide.createIcons();
+        });
+
+        document.getElementById('db-cards-list').addEventListener('click', e => {
+          const editBtn = e.target.closest('.edit-card-btn');
+          if (editBtn) {
+            openCardEditor(editBtn.dataset.editCard);
+            return;
+          }
+          const delBtn = e.target.closest('.delete-card-btn');
+          if (delBtn) {
+            const card = state.cards.find(c => c.id === delBtn.dataset.deleteCard);
+            if (!card) return;
+            openConfirm('刪除信用卡', `確定要刪除「${card.bank} ${card.name}」及其所有回饋規則嗎？`, () => {
+              state.cards = state.cards.filter(c => c.id !== card.id);
+              saveState();
+              renderAll();
+              showToast(`已刪除「${card.bank} ${card.name}」`);
+            });
+          }
+        });
+
+        // Editor modal controls
+        document.getElementById('close-editor-modal-btn').addEventListener('click', closeCardEditor);
+        document.getElementById('cancel-editor-btn').addEventListener('click', closeCardEditor);
+        document.getElementById('card-editor-form').addEventListener('submit', handleSaveCardForm);
+        document.getElementById('add-rule-row-btn').addEventListener('click', () => {
+          const container = document.getElementById('edit-rules-container');
+          container.insertAdjacentHTML('beforeend', createRuleRowHtml({ rate: 3.0, payments: ['實體刷卡', '網購線上'] }));
+        });
+        document.getElementById('edit-rules-container').addEventListener('click', e => {
+          const rmBtn = e.target.closest('.remove-rule-row-btn');
+          if (rmBtn) rmBtn.closest('.rule-editor-row').remove();
+        });
+
+        // Remote sync
+        document.getElementById('remote-sync-btn').addEventListener('click', handleRemoteSync);
+
+        // Copy AI prompt
+        document.getElementById('copy-ai-prompt-btn').addEventListener('click', () => {
+          copyTextToClipboard(buildAiUpdatePrompt()).then(() => {
+            showToast('已複製 AI 更新提示詞！可直接貼給 AI 產生最新 JSON');
+          });
+        });
+
+        // Export JSON
+        document.getElementById('export-json-btn').addEventListener('click', () => {
+          const payload = {
+            version: '1.0',
+            updatedAt: getTodayStr(),
+            cards: state.cards
+          };
+          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `tw-credit-cards-${getTodayStr()}.json`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+          showToast('已下載信用卡權益 JSON 備份檔');
+        });
+
+        // Import JSON file
+        document.getElementById('import-json-file').addEventListener('change', e => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            try {
+              const parsed = JSON.parse(reader.result);
+              const count = validateAndApplyCardsJson(parsed, true);
+              showToast(`已成功匯入並更新 ${count} 張信用卡權益！`);
+            } catch (err) {
+              showToast(`匯入失敗：${err.message}`, 'error');
+            }
+          };
+          reader.readAsText(file);
+          e.target.value = '';
+        });
+
+        // Paste JSON modal
+        const pasteModal = document.getElementById('paste-json-modal');
+        const pasteTa = document.getElementById('paste-json-textarea');
+        const pasteErr = document.getElementById('paste-json-error');
+        document.getElementById('open-paste-json-btn').addEventListener('click', () => {
+          pasteTa.value = '';
+          pasteErr.classList.add('hidden');
+          pasteModal.classList.remove('hidden');
+        });
+        document.getElementById('close-paste-modal-btn').addEventListener('click', () => pasteModal.classList.add('hidden'));
+        document.getElementById('cancel-paste-btn').addEventListener('click', () => pasteModal.classList.add('hidden'));
+        document.getElementById('apply-paste-json-btn').addEventListener('click', () => {
+          try {
+            const parsed = JSON.parse(pasteTa.value.trim());
+            const count = validateAndApplyCardsJson(parsed, true);
+            pasteModal.classList.add('hidden');
+            showToast(`已套用更新共 ${count} 張信用卡權益！`);
+          } catch (err) {
+            pasteErr.textContent = `解析失敗：${err.message}`;
+            pasteErr.classList.remove('hidden');
+          }
+        });
+
+        // Reset default DB
+        document.getElementById('reset-default-db-btn').addEventListener('click', () => {
+          openConfirm('還原預設資料庫', '確定要還原為內建的 2026 下半年台灣熱門信用卡資料庫嗎？您自行新增或修改的卡片將會被覆蓋。', () => {
+            state.cards = deepClone(DEFAULT_CARDS);
+            state.lastUpdated = '2026-11-22';
+            saveState();
+            renderAll();
+            showToast('已還原內建 2026 下半年資料庫');
+          });
+        });
+
+        // Confirm modal buttons
+        document.getElementById('confirm-cancel-btn').addEventListener('click', closeConfirm);
+        document.getElementById('confirm-ok-btn').addEventListener('click', () => {
+          const cb = ui.confirmCallback;
+          closeConfirm();
+          if (typeof cb === 'function') cb();
+        });
+      }
+
+      async function autoSyncHostedCardsJson() {
+        try {
+          if (window.location.protocol !== 'https:') return;
+          const resp = await fetch('./cards.json?t=' + Date.now(), { cache: 'no-store' });
+          if (!resp.ok) return;
+          const data = await resp.json();
+          const remoteUpdated = data && data.updatedAt ? String(data.updatedAt) : '';
+          const count = validateAndApplyCardsJson(data, true);
+          if (remoteUpdated) {
+            state.lastUpdated = remoteUpdated;
+            saveState();
+            renderUpdateTab();
+          }
+          showToast(`已自動同步雲端最新權益（${count} 張卡）`, 'info');
+        } catch (e) {
+          // Silently fall back to local/built-in database when ./cards.json is absent or offline
+        }
+      }
+
+      // ==================== INIT ====================
+      loadState();
+      bindEvents();
+      renderAll();
+      autoSyncHostedCardsJson();
+    })();
+  </script>
+</body>
+</html>
