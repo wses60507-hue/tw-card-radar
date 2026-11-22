@@ -1,0 +1,1105 @@
+{
+  "version": "1.0",
+  "updatedAt": "2026-11-22",
+  "cards": [
+    {
+      "id": "taishin-richart",
+      "bank": "台新銀行",
+      "name": "Richart 卡（7+1 切換刷）",
+      "color": "from-rose-600 to-red-700",
+      "rewardType": "台新Point",
+      "baseRate": 0.3,
+      "validUntil": "2026-12-31",
+      "officialUrl": "https://www.taishinbank.com.tw/TSB/personal/credit/intro/overview/future/ab46dfa7-5d88-11f1-b50f-0050568c09e3",
+      "owned": true,
+      "notes": "含 7+1 大刷（Chill刷/Pay著刷/天天刷/大筆刷/好饗刷/數趣刷/玩旅刷/假日刷），每日 23:59 前於 Richart Life App 切換；設台新帳戶自扣享 Level 2 高回饋。",
+      "rules": [
+        {
+          "id": "ts-chill",
+          "name": "Chill刷（2026下半年新權益）",
+          "rate": 10,
+          "tierKey": "taishinAutoPay",
+          "tierOffRate": 1.3,
+          "bonusCap": null,
+          "condition": "切換「Chill刷」享指定火鍋燒肉、手搖飲、追劇/追星通路 3.3%–10%（含 LINE Pay 綁定）",
+          "payments": [
+            "實體刷卡",
+            "網購線上",
+            "LINE Pay",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "chill刷",
+            "火鍋",
+            "燒肉",
+            "手搖飲",
+            "飲料",
+            "追劇",
+            "追星",
+            "聚餐",
+            "餐廳",
+            "美食"
+          ]
+        },
+        {
+          "id": "ts-pay-taishin",
+          "name": "Pay著刷（台新Pay/台灣Pay）",
+          "rate": 3.8,
+          "tierKey": "taishinAutoPay",
+          "tierOffRate": 1.3,
+          "bonusCap": null,
+          "condition": "切換「Pay著刷」並綁定台新Pay 或台灣Pay (TWQR) 享 3.8%",
+          "payments": [
+            "台新Pay/台灣Pay"
+          ],
+          "keywords": [
+            "pay著刷",
+            "台新pay",
+            "台灣pay",
+            "twqr",
+            "7-11",
+            "7-eleven",
+            "小七",
+            "全家",
+            "超商",
+            "行動支付",
+            "新光三越",
+            "康是美"
+          ]
+        },
+        {
+          "id": "ts-pay-line",
+          "name": "Pay著刷（LINE Pay 領券加碼）",
+          "rate": 3.8,
+          "tierKey": "taishinAutoPay",
+          "tierOffRate": 1.3,
+          "bonusCap": 500,
+          "condition": "切換「Pay著刷」2.3% + 領券加碼 1.5%（加碼月上限 500 點）；亦支援全盈+Pay",
+          "payments": [
+            "LINE Pay"
+          ],
+          "keywords": [
+            "pay著刷",
+            "line pay",
+            "linepay",
+            "全盈+pay",
+            "行動支付",
+            "飲料",
+            "餐廳",
+            "美食",
+            "日常消費",
+            "小額消費"
+          ]
+        },
+        {
+          "id": "ts-ec",
+          "name": "數趣刷",
+          "rate": 3.3,
+          "tierKey": "taishinAutoPay",
+          "tierOffRate": 1.3,
+          "bonusCap": null,
+          "condition": "切換「數趣刷」3.3%：網購、線上課程、遊戲影音、指定 AI 服務（官方限 ChatGPT/Claude/Perplexity/Notion/Canva，不含 Gemini）；不含 LINE Pay/街口",
+          "payments": [
+            "網購線上",
+            "實體刷卡",
+            "Apple Pay/Google Pay",
+            "台新Pay/台灣Pay"
+          ],
+          "keywords": [
+            "數趣刷",
+            "momo",
+            "蝦皮",
+            "shopee",
+            "pchome",
+            "酷澎",
+            "coupang",
+            "淘寶",
+            "taobao",
+            "amazon",
+            "東森",
+            "東森購物",
+            "博客來",
+            "richart mart",
+            "payeasy",
+            "iherb",
+            "shein",
+            "farfetch",
+            "olive young",
+            "知識衛星",
+            "amazing talker",
+            "tutor abc",
+            "hahow",
+            "pressplay",
+            "udemy",
+            "kobo",
+            "readmoo",
+            "線上課程",
+            "mycard",
+            "遊戲橘子",
+            "steam",
+            "playstation",
+            "nintendo",
+            "netflix",
+            "spotify",
+            "disney+",
+            "chatgpt",
+            "notion",
+            "canva",
+            "perplexity",
+            "claude",
+            "ai服務",
+            "ai訂閱",
+            "網購",
+            "電商",
+            "遊戲",
+            "影音",
+            "影音訂閱"
+          ]
+        },
+        {
+          "id": "ts-daily",
+          "name": "天天刷",
+          "rate": 3.3,
+          "tierKey": "taishinAutoPay",
+          "tierOffRate": 1.3,
+          "bonusCap": null,
+          "condition": "切換「天天刷」：超商（限台新Pay綁定）、量販超市、交通加油、藥妝藥局享 3.3%",
+          "payments": [
+            "台新Pay/台灣Pay",
+            "實體刷卡",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "天天刷",
+            "7-11",
+            "7-eleven",
+            "小七",
+            "全家",
+            "超商",
+            "家樂福",
+            "大買家",
+            "lopia",
+            "唐吉軻德",
+            "donki",
+            "智生活",
+            "高鐵",
+            "台鐵",
+            "台灣大車隊",
+            "linego",
+            "yoxi",
+            "uber",
+            "bolt",
+            "計程車",
+            "中油",
+            "全國加油",
+            "evoasis",
+            "evalue",
+            "uspace",
+            "車麻吉",
+            "加油",
+            "充電",
+            "屈臣氏",
+            "康是美",
+            "寶雅",
+            "大樹藥局",
+            "杏一",
+            "丁丁藥局",
+            "佑全",
+            "藥妝",
+            "藥局"
+          ]
+        },
+        {
+          "id": "ts-dining",
+          "name": "好饗刷",
+          "rate": 3.3,
+          "tierKey": "taishinAutoPay",
+          "tierOffRate": 1.3,
+          "bonusCap": null,
+          "condition": "切換「好饗刷」：全臺餐飲（含王品瘋Pay）、外送平台、展演購票娛樂、指定飯店/樂園、KTV 享 3.3%",
+          "payments": [
+            "實體刷卡",
+            "網購線上",
+            "Apple Pay/Google Pay",
+            "台新Pay/台灣Pay"
+          ],
+          "keywords": [
+            "好饗刷",
+            "餐廳",
+            "美食",
+            "王品",
+            "王品瘋pay",
+            "uber eats",
+            "ubereats",
+            "foodpanda",
+            "外送",
+            "麥當勞",
+            "壽司郎",
+            "星巴克",
+            "starbucks",
+            "飯店",
+            "樂園",
+            "ktv",
+            "錢櫃",
+            "好樂迪",
+            "oncor",
+            "sing!go",
+            "享溫馨",
+            "funnow",
+            "娛樂",
+            "購票",
+            "展演"
+          ]
+        },
+        {
+          "id": "ts-big",
+          "name": "大筆刷",
+          "rate": 3.3,
+          "tierKey": "taishinAutoPay",
+          "tierOffRate": 1.3,
+          "bonusCap": null,
+          "condition": "切換「大筆刷」：指定百貨（新光三越含skm pay、遠百、SOGO、漢神巨蛋、微風廣場）、Outlet、居家裝修、時尚品味享 3.3%",
+          "payments": [
+            "實體刷卡",
+            "Apple Pay/Google Pay",
+            "台新Pay/台灣Pay"
+          ],
+          "keywords": [
+            "大筆刷",
+            "新光三越",
+            "skm pay",
+            "sogo",
+            "遠東百貨",
+            "遠百",
+            "漢神百貨",
+            "漢神巨蛋",
+            "微風",
+            "微風廣場",
+            "百貨",
+            "outlet",
+            "三井outlet",
+            "華泰名品城",
+            "ikea",
+            "特力屋",
+            "居家",
+            "裝修",
+            "uniqlo",
+            "zara",
+            "時尚"
+          ]
+        },
+        {
+          "id": "ts-travel",
+          "name": "玩旅刷",
+          "rate": 3.3,
+          "tierKey": "taishinAutoPay",
+          "tierOffRate": 1.3,
+          "bonusCap": null,
+          "condition": "切換「玩旅刷」：海外消費（實體/線上）、海外交通卡（Suica/ICOCA/WOWPASS）、15家航空、訂房網、13家旅行社享 3.3%",
+          "payments": [
+            "實體刷卡",
+            "網購線上",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "玩旅刷",
+            "海外",
+            "日本",
+            "韓國",
+            "歐美",
+            "出國",
+            "機票",
+            "航空",
+            "華航",
+            "長榮",
+            "星宇",
+            "虎航",
+            "agoda",
+            "booking",
+            "hotels.com",
+            "expedia",
+            "airbnb",
+            "klook",
+            "kkday",
+            "suica",
+            "icoca",
+            "wowpass",
+            "雄獅",
+            "可樂旅遊",
+            "易遊網",
+            "旅遊",
+            "旅行社"
+          ]
+        },
+        {
+          "id": "ts-holiday",
+          "name": "假日刷（節假日一般消費保底）",
+          "rate": 2,
+          "holidayOnly": true,
+          "excludeKeywords": [
+            "7-11",
+            "7-eleven",
+            "小七",
+            "全家",
+            "萊爾富",
+            "ok超商",
+            "超商",
+            "便利商店",
+            "全聯",
+            "繳稅",
+            "稅"
+          ],
+          "bonusCap": null,
+          "condition": "未命中更高指定通路時，節假日切「假日刷」享一般消費 2% 無上限（含手動繳保費/LINE Pay/全盈+Pay；不含四大超商、全聯、繳稅費、街口）",
+          "payments": [
+            "實體刷卡",
+            "網購線上",
+            "LINE Pay",
+            "Apple Pay/Google Pay",
+            "台新Pay/台灣Pay"
+          ],
+          "keywords": [
+            "假日刷",
+            "假日",
+            "週末",
+            "保費",
+            "保險",
+            "一般消費",
+            "日常消費",
+            "line pay"
+          ]
+        },
+        {
+          "id": "ts-insurance",
+          "name": "保費免切換",
+          "rate": 1.3,
+          "bonusCap": null,
+          "condition": "免切換方案一次付清保費直接享 1.3%（若遇假日切換「假日刷」享 2%）",
+          "payments": [
+            "實體刷卡",
+            "網購線上"
+          ],
+          "keywords": [
+            "保費",
+            "保險"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cathay-cube",
+      "bank": "國泰世華",
+      "name": "CUBE 信用卡",
+      "color": "from-emerald-600 to-teal-700",
+      "rewardType": "小樹點",
+      "baseRate": 0.3,
+      "validUntil": "2026-12-31",
+      "officialUrl": "https://www.cathay-cube.com.tw/cathaybk/personal/product/credit-card/cards/cube",
+      "owned": true,
+      "notes": "每日可於 CUBE App 切換一次權益（當日生效）；財管 VIP 玩數位/樂饗購/趣旅行享 3.3%，2026 下半年新增「全支付」與「台塑家」2% 無上限。",
+      "rules": [
+        {
+          "id": "cube-digital",
+          "name": "玩數位",
+          "rate": 3,
+          "tierKey": "cubeVip",
+          "tierRate": 3.3,
+          "bonusCap": null,
+          "condition": "每日於 CUBE App 切換至「玩數位」（一般 3% / VIP 3.3% 無上限）",
+          "payments": [
+            "網購線上",
+            "實體刷卡",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "玩數位",
+            "momo",
+            "蝦皮",
+            "shopee",
+            "pchome",
+            "酷澎",
+            "coupang",
+            "淘寶",
+            "amazon",
+            "博客來",
+            "apple",
+            "chatgpt",
+            "claude",
+            "gemini",
+            "notion",
+            "canva",
+            "netflix",
+            "spotify",
+            "disney+",
+            "網購",
+            "電商",
+            "ai訂閱",
+            "ai服務",
+            "影音訂閱",
+            "露天"
+          ]
+        },
+        {
+          "id": "cube-shop",
+          "name": "樂饗購",
+          "rate": 3,
+          "tierKey": "cubeVip",
+          "tierRate": 3.3,
+          "bonusCap": null,
+          "condition": "每日於 CUBE App 切換至「樂饗購」（指定百貨、餐飲、外送、屈臣氏含官網/App、康是美）",
+          "payments": [
+            "實體刷卡",
+            "網購線上",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "樂饗購",
+            "新光三越",
+            "漢神百貨",
+            "sogo",
+            "遠東百貨",
+            "微風",
+            "百貨",
+            "uber eats",
+            "ubereats",
+            "foodpanda",
+            "外送",
+            "餐廳",
+            "美食",
+            "王品",
+            "星巴克",
+            "starbucks",
+            "麥當勞",
+            "壽司郎",
+            "屈臣氏",
+            "康是美",
+            "藥妝",
+            "寶雅"
+          ]
+        },
+        {
+          "id": "cube-travel",
+          "name": "趣旅行",
+          "rate": 3,
+          "tierKey": "cubeVip",
+          "tierRate": 3.3,
+          "bonusCap": null,
+          "condition": "每日於 CUBE App 切換至「趣旅行」（海外實體、航空、訂房網、可樂/易遊網、高鐵）",
+          "payments": [
+            "實體刷卡",
+            "網購線上",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "趣旅行",
+            "日本",
+            "韓國",
+            "海外",
+            "出國",
+            "機票",
+            "航空",
+            "華航",
+            "長榮",
+            "星宇",
+            "agoda",
+            "booking",
+            "hotels.com",
+            "expedia",
+            "klook",
+            "kkday",
+            "高鐵",
+            "飯店",
+            "旅遊",
+            "雄獅",
+            "可樂旅遊",
+            "易遊網"
+          ]
+        },
+        {
+          "id": "cube-select",
+          "name": "集精選",
+          "rate": 2,
+          "bonusCap": null,
+          "condition": "切換「集精選」2% 無上限（7-11 需綁 OPEN錢包、全家需綁 My FamiPay；全聯限實體卡/PX Pay）",
+          "payments": [
+            "OPEN錢包/FamiPay",
+            "實體刷卡"
+          ],
+          "keywords": [
+            "集精選",
+            "7-11",
+            "7-eleven",
+            "小七",
+            "全家",
+            "familymart",
+            "超商",
+            "便利商店",
+            "全聯",
+            "px pay",
+            "家樂福",
+            "lopia",
+            "中油",
+            "加油",
+            "ikea",
+            "充電",
+            "停車"
+          ]
+        },
+        {
+          "id": "cube-pxplus",
+          "name": "全支付（2026新權益）",
+          "rate": 2,
+          "bonusCap": null,
+          "condition": "切換「全支付」方案，於全支付國內合作通路享 2% 無上限（小樹點可即時折抵）",
+          "payments": [
+            "全支付"
+          ],
+          "keywords": [
+            "全支付",
+            "全聯",
+            "行動支付",
+            "飲料",
+            "餐廳",
+            "日常消費"
+          ]
+        },
+        {
+          "id": "cube-formosa",
+          "name": "台塑家（2026新權益）",
+          "rate": 2,
+          "bonusCap": null,
+          "condition": "切換「台塑家」2% 無上限：台塑/台亞/福懋/統一速邁樂加油站、台塑生醫、7-11/全家/萊爾富實體門市",
+          "payments": [
+            "實體刷卡",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "台塑家",
+            "台塑石油",
+            "台亞",
+            "福懋",
+            "統一速邁樂",
+            "加油",
+            "台塑生醫",
+            "長庚生技",
+            "7-11",
+            "7-eleven",
+            "小七",
+            "全家",
+            "萊爾富",
+            "超商"
+          ]
+        },
+        {
+          "id": "cube-insurance",
+          "name": "保費領券加碼",
+          "rate": 1.2,
+          "bonusCap": 1000,
+          "condition": "CUBE App 領取保費優惠券享 1.2%（加碼 0.9% 上限 1,000 點，不含第三方支付）",
+          "payments": [
+            "實體刷卡",
+            "網購線上"
+          ],
+          "keywords": [
+            "保費",
+            "保險"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "esun-unicard",
+      "bank": "玉山銀行",
+      "name": "Unicard",
+      "color": "from-teal-600 to-cyan-700",
+      "rewardType": "玉山 e point",
+      "baseRate": 1,
+      "validUntil": "2026-12-31",
+      "officialUrl": "https://www.money101.com.tw/blog/%E5%88%87%E6%8F%9B%E5%88%B7%E4%BF%A1%E7%94%A8%E5%8D%A1%E6%AF%94%E4%B8%80%E6%AF%94",
+      "owned": false,
+      "notes": "以當月最後一次設定方案結算（簡單選3% / 任意選8家3.5% / UP選4.5%）；須完成帳單e化+玉山自扣。",
+      "rules": [
+        {
+          "id": "unicard-top100",
+          "name": "百大指定特店",
+          "rate": 3.5,
+          "tierKey": "unicardPlan",
+          "bonusCap": null,
+          "condition": "依所選方案：簡單選 3% / 任意選（最多8家）3.5% / UP選 4.5%",
+          "payments": [
+            "實體刷卡",
+            "網購線上",
+            "LINE Pay",
+            "Apple Pay/Google Pay",
+            "全支付"
+          ],
+          "keywords": [
+            "百大特店",
+            "line pay",
+            "linepay",
+            "全支付",
+            "7-11",
+            "7-eleven",
+            "小七",
+            "全家",
+            "超商",
+            "momo",
+            "蝦皮",
+            "shopee",
+            "酷澎",
+            "coupang",
+            "淘寶",
+            "uber eats",
+            "foodpanda",
+            "外送",
+            "新光三越",
+            "百貨",
+            "全聯",
+            "家樂福",
+            "星巴克",
+            "屈臣氏",
+            "康是美",
+            "高鐵",
+            "日本",
+            "海外",
+            "餐廳",
+            "美食",
+            "網購",
+            "電商",
+            "中油",
+            "加油"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hsbc-liveplus",
+      "bank": "滙豐銀行",
+      "name": "Live+ 現金回饋卡",
+      "color": "from-slate-800 to-slate-950",
+      "rewardType": "現金積點",
+      "baseRate": 0.88,
+      "validUntil": "2026-12-31",
+      "officialUrl": "https://www.hsbc.com.tw/credit-cards/products/liveplus/",
+      "owned": false,
+      "notes": "免切換！三大通路加碼 3%（月上限 888 點）＋滙豐帳戶自扣加碼 1%（月上限 200 點）。",
+      "rules": [
+        {
+          "id": "live-asia-dining",
+          "name": "指定國家海外餐飲",
+          "rate": 5.88,
+          "tierKey": "hsbcAutoPay",
+          "tierOffRate": 4.88,
+          "bonusCap": 888,
+          "condition": "日/韓/星/馬/泰等指定國家餐廳消費（自扣 5.88% / 未自扣 4.88%）",
+          "payments": [
+            "實體刷卡",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "日本餐廳",
+            "韓國餐廳",
+            "海外餐飲",
+            "日本美食",
+            "旅遊餐飲"
+          ]
+        },
+        {
+          "id": "live-top3",
+          "name": "餐飲 / 購物 / 娛樂三大通路",
+          "rate": 4.88,
+          "tierKey": "hsbcAutoPay",
+          "tierOffRate": 3.88,
+          "bonusCap": 888,
+          "condition": "三大精選通路（自扣 4.88% / 未自扣 3.88%，三大通路加碼月上限 888 點）",
+          "payments": [
+            "實體刷卡",
+            "網購線上",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "餐廳",
+            "美食",
+            "火鍋",
+            "燒肉",
+            "王品",
+            "麥當勞",
+            "星巴克",
+            "starbucks",
+            "壽司郎",
+            "uber eats",
+            "ubereats",
+            "foodpanda",
+            "外送",
+            "百貨",
+            "新光三越",
+            "sogo",
+            "漢神百貨",
+            "遠東百貨",
+            "微風",
+            "momo",
+            "蝦皮",
+            "shopee",
+            "uniqlo",
+            "ikea",
+            "電影",
+            "威秀",
+            "娛樂",
+            "購物"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "esun-ubear",
+      "bank": "玉山銀行",
+      "name": "U Bear 信用卡",
+      "color": "from-amber-500 to-orange-600",
+      "rewardType": "現金回饋",
+      "baseRate": 1,
+      "validUntil": "2027-02-28",
+      "officialUrl": "https://event.esunbank.com.tw/credit/ubear/index.html",
+      "owned": true,
+      "notes": "免切換、當期帳單直接折抵！活動期間 2026/9/1–2027/2/28，須綁定帳單e化+玉山帳戶自扣。",
+      "rules": [
+        {
+          "id": "ubear-sub",
+          "name": "指定影音 / AI 數位訂閱",
+          "rate": 10,
+          "bonusCap": 100,
+          "condition": "指定數位訂閱享 10%（每期上限 NT$100，刷 NT$1,000 封頂）",
+          "payments": [
+            "網購線上"
+          ],
+          "keywords": [
+            "netflix",
+            "spotify",
+            "disney+",
+            "chatgpt",
+            "claude",
+            "gemini",
+            "nintendo",
+            "playstation",
+            "ai訂閱",
+            "ai服務",
+            "影音訂閱",
+            "訂閱"
+          ]
+        },
+        {
+          "id": "ubear-cpc",
+          "name": "中油 Pay 直營站加油（登錄）",
+          "rate": 6,
+          "bonusCap": 100,
+          "condition": "綁定中油 Pay 當月滿 NT$3,000 且登錄（網購 3% + 加碼 3% 上限 100 點）",
+          "payments": [
+            "網購線上",
+            "實體刷卡"
+          ],
+          "keywords": [
+            "中油",
+            "中油pay",
+            "加油"
+          ]
+        },
+        {
+          "id": "ubear-online",
+          "name": "網路消費 & 指定行動支付",
+          "rate": 3,
+          "bonusCap": 150,
+          "condition": "基本 1% 無上限 + 網購加碼 2%（加碼月上限 NT$150，刷 NT$7,500 封頂）",
+          "payments": [
+            "網購線上",
+            "LINE Pay",
+            "街口支付"
+          ],
+          "keywords": [
+            "momo",
+            "蝦皮",
+            "shopee",
+            "pchome",
+            "酷澎",
+            "coupang",
+            "淘寶",
+            "amazon",
+            "博客來",
+            "iherb",
+            "hahow",
+            "uber eats",
+            "ubereats",
+            "foodpanda",
+            "外送",
+            "line pay",
+            "linepay",
+            "街口",
+            "街口支付",
+            "agoda",
+            "booking",
+            "klook",
+            "高鐵",
+            "網購",
+            "電商",
+            "行動支付",
+            "線上課程"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hsbc-diamond",
+      "bank": "滙豐銀行",
+      "name": "匯鑽卡",
+      "color": "from-indigo-600 to-blue-700",
+      "rewardType": "現金積點",
+      "baseRate": 1,
+      "validUntil": "2026-12-31",
+      "officialUrl": "https://www.hsbc.com.tw/credit-cards/products/cashback-titanium/",
+      "owned": false,
+      "notes": "20+ 指定通路筆筆 3%；累積滿 5,000 點且帳戶往來達檻可翻倍折抵 NT$10,000（等同 6%）。",
+      "rules": [
+        {
+          "id": "diamond-3pct",
+          "name": "指定 20+ 通路（翻倍最高 6%）",
+          "rate": 3,
+          "bonusCap": 2000,
+          "condition": "街口支付 / PayPal / momo / Uber Eats / 訂房 / 影音 3%（達檻翻倍折抵等同 6%）",
+          "payments": [
+            "街口支付",
+            "網購線上"
+          ],
+          "keywords": [
+            "街口",
+            "街口支付",
+            "paypal",
+            "momo",
+            "uber eats",
+            "ubereats",
+            "agoda",
+            "booking",
+            "netflix",
+            "disney+",
+            "行動支付",
+            "外送",
+            "網購",
+            "影音訂閱"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sinopac-daway",
+      "bank": "永豐銀行",
+      "name": "DAWAY 卡",
+      "color": "from-emerald-500 to-green-600",
+      "rewardType": "LINE POINTS",
+      "baseRate": 0.5,
+      "validUntil": "2026-12-31",
+      "officialUrl": "https://bank.sinopac.com/sinopacbt/personal/credit-card/introduction/bankcard/DAWAY.html",
+      "owned": false,
+      "notes": "需達 DAWAY GO 等級（帳戶自扣）；2026 下半年新戶 LINE Pay 最高 8%，舊戶 2%。",
+      "rules": [
+        {
+          "id": "daway-linepay",
+          "name": "LINE Pay 一般消費",
+          "rate": 2,
+          "tierKey": "dawayNewUser",
+          "tierRate": 8,
+          "bonusCap": 300,
+          "condition": "綁定 LINE Pay（舊戶 2% 加碼上限 300 點 / 2026下半年新戶最高 8%）",
+          "payments": [
+            "LINE Pay"
+          ],
+          "keywords": [
+            "line pay",
+            "linepay",
+            "行動支付",
+            "餐廳",
+            "美食",
+            "飲料",
+            "手搖飲",
+            "日常消費",
+            "小額消費"
+          ]
+        },
+        {
+          "id": "daway-overseas",
+          "name": "海外消費",
+          "rate": 2.5,
+          "bonusCap": null,
+          "condition": "海外消費 2.5% 回饋無上限",
+          "payments": [
+            "實體刷卡",
+            "網購線上",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "海外",
+            "日本",
+            "韓國",
+            "歐美",
+            "出國",
+            "旅遊"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dbs-eco",
+      "bank": "星展銀行",
+      "name": "eco 永續卡",
+      "color": "from-violet-600 to-purple-700",
+      "rewardType": "現金積點",
+      "baseRate": 1,
+      "validUntil": "2026-12-31",
+      "officialUrl": "https://www.dbs.com.tw/personal-zh/cards/dbs_eco/index.html",
+      "owned": false,
+      "notes": "歐美日韓泰新實體消費最高 5%（含加碼 4% 每期上限 600 點）；國內外一般消費 1% 無上限。",
+      "rules": [
+        {
+          "id": "dbs-overseas-dining",
+          "name": "海外實體餐廳（登錄）",
+          "rate": 10,
+          "bonusCap": 1000,
+          "condition": "2026/9/1–12/31 登錄享海外實體餐廳最高 10%（單日上限 300 / 月上限 1,000）",
+          "payments": [
+            "實體刷卡",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "日本餐廳",
+            "韓國餐廳",
+            "海外餐飲",
+            "日本美食",
+            "旅遊餐飲"
+          ]
+        },
+        {
+          "id": "dbs-overseas",
+          "name": "指定國家海外實體（日韓泰新美歐）",
+          "rate": 5,
+          "bonusCap": 600,
+          "condition": "日本/韓國/泰國/新加坡/美洲/歐洲當地實體消費（加碼 4% 月上限 600 點）",
+          "payments": [
+            "實體刷卡",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "日本",
+            "韓國",
+            "泰國",
+            "新加坡",
+            "美國",
+            "歐洲",
+            "歐美",
+            "海外",
+            "出國",
+            "旅遊"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ubot-jiho",
+      "bank": "聯邦銀行",
+      "name": "吉鶴卡",
+      "color": "from-rose-500 to-pink-600",
+      "rewardType": "現金回饋",
+      "baseRate": 1,
+      "validUntil": "2026-12-31",
+      "officialUrl": "https://activity.ubot.com.tw/2026JiHoCard/index.htm",
+      "owned": false,
+      "notes": "日本消費 2.5% 無上限；日本感應 QUICPay（Apple Pay/Google Pay）再加碼 2.5%（最高 5%）。",
+      "rules": [
+        {
+          "id": "jiho-jp-pay",
+          "name": "日本實體（Apple Pay / Google Pay QUICPay）",
+          "rate": 5,
+          "bonusCap": 1000,
+          "condition": "日本當地以 QUICPay 感應支付（基本 2.5% 無上限 + 加碼 2.5%）",
+          "payments": [
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "日本",
+            "quicpay",
+            "日本實體",
+            "日本藥妝",
+            "日本超商",
+            "旅遊",
+            "出國",
+            "海外"
+          ]
+        },
+        {
+          "id": "jiho-jp-base",
+          "name": "日本實體 / 日幣消費",
+          "rate": 2.5,
+          "bonusCap": null,
+          "condition": "日幣一般消費 2.5% 回饋無上限（滿 NT$15,000 登錄超額再 +3%）",
+          "payments": [
+            "實體刷卡",
+            "網購線上"
+          ],
+          "keywords": [
+            "日本",
+            "日幣",
+            "日本網購",
+            "海外",
+            "出國",
+            "旅遊"
+          ]
+        },
+        {
+          "id": "jiho-jp-ic",
+          "name": "日本交通卡儲值（登錄）",
+          "rate": 1.5,
+          "bonusCap": null,
+          "condition": "日幣儲值 Suica / ICOCA / PASMO 登錄享 1.5%",
+          "payments": [
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "suica",
+            "icoca",
+            "pasmo",
+            "西瓜卡",
+            "日本交通"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fubon-j",
+      "bank": "台北富邦",
+      "name": "富邦 J 卡",
+      "color": "from-sky-600 to-blue-700",
+      "rewardType": "LINE POINTS / 現金",
+      "baseRate": 1,
+      "validUntil": "2026-12-31",
+      "officialUrl": "https://www.fubon.com/banking/personal/credit_card/all_card/all_card.htm",
+      "owned": false,
+      "notes": "日韓泰當地實體消費登錄最高 6%；國內一般消費 1% 無上限。",
+      "rules": [
+        {
+          "id": "fubon-j-asia",
+          "name": "日韓泰當地實體消費（登錄）",
+          "rate": 6,
+          "bonusCap": 600,
+          "condition": "日本 / 韓國 / 泰國當地實體刷卡（含登錄加碼，最高 6%）",
+          "payments": [
+            "實體刷卡",
+            "Apple Pay/Google Pay"
+          ],
+          "keywords": [
+            "日本",
+            "韓國",
+            "泰國",
+            "海外",
+            "出國",
+            "旅遊"
+          ]
+        }
+      ]
+    }
+  ]
+}
