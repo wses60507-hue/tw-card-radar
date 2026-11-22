@@ -16,7 +16,7 @@ prompt = f"""今天是 {today}。請使用 Google 搜尋查詢台灣以下信用
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 resp = client.models.generate_content(
-    model="gemini-2.5-flash",
+    model="gemini-3.8-flash",
     contents=prompt,
     config=types.GenerateContentConfig(
         tools=[types.Tool(google_search=types.GoogleSearch())],
