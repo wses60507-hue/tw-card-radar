@@ -1,26 +1,57 @@
-import datetime, json, os, re
+import datetime, html, json, os, re, urllib.request
 from google import genai
 from google.genai import types
+
+def fetch_page_text(url, max_chars=3500):
+    if not url:
+        return ""
+    try:
+        req = urllib.request.Request(
+            url,
+            headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+        )
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            raw = resp.read().decode("utf-8", errors="ignore")
+        raw = re.sub(r"(?is)<(script|style|noscript).*?>.*?</\1>", " ", raw)
+        text = html.unescape(re.sub(r"<[^>]+>", " ", raw))
+        text = re.sub(r"\s+", " ", text).strip()
+        return text[:max_chars]
+    except Exception as e:
+        print(f"略過抓取 {url}: {e}")
+        return ""
 
 with open("cards.json", "r", encoding="utf-8") as f:
     current_data = json.load(f)
 
 today = datetime.date.today().isoformat()
-card_list = "、".join(f"{c['bank']}{c['name']}" for c in current_data.get("cards", []))
+snippets = []
+for c in current_data.get("cards", []):
+    page_text = fetch_page_text(c.get("officialUrl", ""))
+    if page_text:
+        snippets.append(f"【{c['bank']} {c['name']} 官網最新文字】\n{page_text}")
 
-prompt = f"""今天是 {today}。請使用 Google 搜尋查詢台灣以下信用卡最新的官方回饋權益：{card_list}。
-請嚴格依照原本 JSON 的結構與欄位名稱更新（保留原 id、bank、name、color、tierKey 等欄位，只更新最新回饋率 rate、加碼上限 bonusCap、活動到期日 validUntil、條件 condition、通路關鍵字 keywords 與官方網址 officialUrl）。
-只輸出純 JSON 物件（包含 version、updatedAt: "{today}"、cards 陣列），不要任何多餘文字或說明。
-原本 JSON 參考：
-{json.dumps(current_data, ensure_ascii=False)}"""
+fetched_context = "\n\n".join(snippets) if snippets else "（本次未抓到新網頁文字，請保留原資料並更新日期）"
+
+prompt = f"""今天是 {today}。請根據以下即時抓取到的台灣各銀行信用卡官網文字，核對並更新原本的 cards.json。
+規則：
+1. 嚴格保留原本 JSON 結構與所有欄位名稱（id, bank, name, color, rewardType, baseRate, validUntil, officialUrl, owned, notes, rules 及其 tierKey/tierRate/tierOffRate/holidayOnly/excludeKeywords）。
+2. 若官網文字中有明確出現更新後的回饋率、活動到期日(validUntil)、上限或條件，請更新對應欄位；若某張卡未抓到官網文字或官網未提及變動，請完整保留該張卡原本的資料不要刪減。
+3. 將最外層 updatedAt 更新為 "{today}"，只輸出純 JSON。
+
+=== 原本 cards.json ===
+{json.dumps(current_data, ensure_ascii=False)}
+
+=== 即時抓取的銀行官網文字 ===
+{fetched_context}
+"""
 
 client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 resp = client.models.generate_content(
     model="gemini-3.8-flash",
     contents=prompt,
     config=types.GenerateContentConfig(
-        tools=[types.Tool(google_search=types.GoogleSearch())],
-        temperature=0.2,
+        response_mime_type="application/json",
+        temperature=0.1,
     ),
 )
 
@@ -33,4 +64,4 @@ assert isinstance(updated.get("cards"), list) and len(updated["cards"]) > 0
 
 with open("cards.json", "w", encoding="utf-8") as f:
     json.dump(updated, f, ensure_ascii=False, indent=2)
-print(f"已更新 {len(updated['cards'])} 張信用卡權益 ({today})")
+print(f"成功更新 {len(updated['cards'])} 張信用卡權益 ({today})")
